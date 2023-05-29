@@ -1,0 +1,12 @@
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\bin\Debug\Screen.exe.config
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\bin\Debug\Screen.exe
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\bin\Debug\Screen.pdb
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.csproj.AssemblyReference.cache
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.App.resources
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.Client.resources
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.Properties.Resources.resources
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.Server.resources
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.csproj.GenerateResource.cache
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.csproj.CoreCompileInputs.cache
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.exe
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.pdb
