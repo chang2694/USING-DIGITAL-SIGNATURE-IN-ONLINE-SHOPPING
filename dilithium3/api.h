@@ -1,35 +1,33 @@
 #ifndef API_H
 #define API_H
 
-#include "config.h"
+#include <stddef.h>
+#include <stdint.h>
 
-#if DILITHIUM_MODE == 2
-#define CRYPTO_PUBLICKEYBYTES 1312
-#define CRYPTO_SECRETKEYBYTES 2544
-#define CRYPTO_BYTES 2420
+#define pqcrystals_dilithium3_PUBLICKEYBYTES 1952
+#define pqcrystals_dilithium3_SECRETKEYBYTES 4000
+#define pqcrystals_dilithium3_BYTES 3293
 
-#elif DILITHIUM_MODE == 3
-#define CRYPTO_PUBLICKEYBYTES 1952
-#define CRYPTO_SECRETKEYBYTES 4016
-#define CRYPTO_BYTES 3293
+#define pqcrystals_dilithium3_ref_PUBLICKEYBYTES pqcrystals_dilithium3_PUBLICKEYBYTES
+#define pqcrystals_dilithium3_ref_SECRETKEYBYTES pqcrystals_dilithium3_SECRETKEYBYTES
+#define pqcrystals_dilithium3_ref_BYTES pqcrystals_dilithium3_BYTES
 
-#elif DILITHIUM_MODE == 5
-#define CRYPTO_PUBLICKEYBYTES 2592
-#define CRYPTO_SECRETKEYBYTES 4880
-#define CRYPTO_BYTES 4595
-#endif
+int pqcrystals_dilithium3_ref_keypair(uint8_t *pk, uint8_t *sk);
 
-#define crypto_sign_keypair DILITHIUM_NAMESPACE(_keypair)
-int crypto_sign_keypair(unsigned char *pk, unsigned char *sk);
+int pqcrystals_dilithium3_ref_signature(uint8_t *sig, size_t *siglen,
+                                        const uint8_t *m, size_t mlen,
+                                        const uint8_t *sk);
 
-#define crypto_sign DILITHIUM_NAMESPACE()
-int crypto_sign(unsigned char *sm, unsigned long long *smlen,
-                const unsigned char *msg, unsigned long long len,
-                const unsigned char *sk);
+int pqcrystals_dilithium3_ref(uint8_t *sm, size_t *smlen,
+                              const uint8_t *m, size_t mlen,
+                              const uint8_t *sk);
 
-#define crypto_sign_open DILITHIUM_NAMESPACE(_open)
-int crypto_sign_open(unsigned char *m, unsigned long long *mlen,
-                     const unsigned char *sm, unsigned long long smlen,
-                     const unsigned char *pk);
+int pqcrystals_dilithium3_ref_verify(const uint8_t *sig, size_t siglen,
+                                     const uint8_t *m, size_t mlen,
+                                     const uint8_t *pk);
+
+int pqcrystals_dilithium3_ref_open(uint8_t *m, size_t *mlen,
+                                   const uint8_t *sm, size_t smlen,
+                                   const uint8_t *pk);
 
 #endif
