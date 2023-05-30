@@ -83,17 +83,15 @@ namespace Screen
                     byte[] data = new byte[1024 * 5000];
                     client.Receive(data);
 
-                    string message = (string)Deserialize(data);
-
                     foreach (Socket item in clientList)
                     {
                         if (client != null && item != client)
                         {
-                            item.Send(Serialize(message));
+                            item.Send(data);
                         }
                     }
-
-                    AddMessage(message);
+                    string log = $"Receiving data from {client.RemoteEndPoint}";
+                    AddMessage(log);
                 }
             }
             catch

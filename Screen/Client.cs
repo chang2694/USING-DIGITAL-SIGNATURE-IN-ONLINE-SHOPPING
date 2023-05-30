@@ -28,8 +28,14 @@ namespace Screen
         private void btnSendFile_Click(object sender, EventArgs e)
         {
             //to do: gui file pdf
-            string message = ReadStringFromFile("");    // ten file 
-            Send(message);
+            byte[] data = new byte[1024 * 5000];
+            ReadDataFromPDFFile(data, "./NT219.N22.ATCL-Session2_Group12.pdf");    // ten file 
+            Send(data);
+        }
+
+        private void btnSendKey_Click(object sender, EventArgs e)
+        {
+        
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -83,11 +89,11 @@ namespace Screen
         }
 
         // Send message
-        void Send(string message)
+        void Send(byte[] data)
         {
-            if (message != string.Empty)
+            if (data != null)
             {
-                client.Send(Serialize(message));
+                client.Send(data);
             }
         }
 
@@ -101,10 +107,9 @@ namespace Screen
                     byte[] data = new byte[1024 * 5000];
                     client.Receive(data);
 
-                    string message = (string)Deserialize(data);
+                    SaveDataToPDFFile(data, "./result.pdf");
                     // to do: xu ly du lieu nhan tach ra public key voi data
                     // to do: luu file xuong thanh pdf
-                    SaveStringToFile(message, "");  // Ten file de luu
                 }
             }
             catch
@@ -133,22 +138,20 @@ namespace Screen
             return formatter.Deserialize(stream);
         }
 
-        public string ReadStringFromFile(string _fileName)
+        public void ReadDataFromPDFFile(byte[] data, string _fileName)
         {
-            FileStream fs = new FileStream(_fileName, FileMode.Open);
-            StreamReader sr = new StreamReader(fs);
-            string content = sr.ReadToEnd();
-            sr.Close();
-            return content;
+            System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Open);
+            stream.Read(data, 0, data.Length);
+            stream.Close();
         }
 
-        public void SaveStringToFile(string _str, string _fileName)
+        public void SaveDataToPDFFile(byte[] data, string _fileName)
         {
-            FileStream fs = new FileStream(_fileName, FileMode.Create);
-            string content = _str;
-            StreamWriter sw = new StreamWriter(fs);
-            sw.Write(content);
-            sw.Close();
+            System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Create);
+            stream.Write(data, 0, data.Length);
+            stream.Close();
         }
+
+      
     }
 }

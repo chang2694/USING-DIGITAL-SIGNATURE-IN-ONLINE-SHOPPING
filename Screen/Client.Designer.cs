@@ -32,6 +32,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.btnSendKey = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSendFile
@@ -72,12 +73,24 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // btnSendKey
+            // 
+            this.btnSendKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSendKey.Location = new System.Drawing.Point(142, 82);
+            this.btnSendKey.Name = "btnSendKey";
+            this.btnSendKey.Size = new System.Drawing.Size(117, 91);
+            this.btnSendKey.TabIndex = 5;
+            this.btnSendKey.Text = "Send key";
+            this.btnSendKey.UseVisualStyleBackColor = true;
+            this.btnSendKey.Click += new System.EventHandler(this.btnSendKey_Click);
+            // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnSendKey);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -95,6 +108,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnSendKey;
     }
 }
 
