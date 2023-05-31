@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "stddef.h": "c",
-        "sign.h": "c",
-        "randombytes.h": "c"
-    }
-}
