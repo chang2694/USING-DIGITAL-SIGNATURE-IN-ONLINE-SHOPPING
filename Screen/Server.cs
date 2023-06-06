@@ -127,5 +127,10 @@ namespace Screen
 
             return formatter.Deserialize(stream);
         }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
