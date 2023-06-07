@@ -80,7 +80,7 @@ namespace Screen
             {
                 while (true)
                 {
-                    byte[] data = new byte[1024 * 5000];
+                    byte[] data = new byte[1024 * 5001];
                     client.Receive(data);
 
                     foreach (Socket item in clientList)
@@ -102,7 +102,7 @@ namespace Screen
         }
 
 
-        //add message vao khung chat
+        //add message vao listview
         void AddMessage(string m)
         {
             listView1.Items.Add(new ListViewItem() { Text = m });

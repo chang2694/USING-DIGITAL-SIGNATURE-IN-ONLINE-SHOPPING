@@ -29,13 +29,22 @@ namespace Screen
         {
             //to do: gui file pdf
             byte[] data = new byte[1024 * 5000];
-            ReadDataFromPDFFile(data, "./NT219.N22.ATCL-Session2_Group12.pdf");    // ten file 
-            Send(data);
+            ReadDataFromFile(data, "./NT219.N22.ATCL-Session2_Group12.pdf");    // ten file
+            byte[] temp = new byte[1024 * 5001];
+            temp[0] = 1;
+            Array.Copy(data,0,temp,1,data.Length);
+            Send(temp);
         }
 
         private void btnSendKey_Click(object sender, EventArgs e)
         {
-        
+            //to do: gui file chua public key
+            byte[] data = new byte[1024 * 5000];
+            ReadDataFromFile(data, "./test.txt");    // ten file
+            byte[] temp = new byte[1024 * 5001];
+            temp[0] = 2;
+            Array.Copy(data, 0, temp, 1, data.Length);
+            Send(temp);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -104,12 +113,19 @@ namespace Screen
             {
                 while (true)
                 {
-                    byte[] data = new byte[1024 * 5000];
+                    byte[] data = new byte[1024 * 5001];
                     client.Receive(data);
 
-                    SaveDataToPDFFile(data, "./result.pdf");
-                    // to do: xu ly du lieu nhan tach ra public key voi data
-                    // to do: luu file xuong thanh pdf
+                    if (data[0]==1)
+                    {
+                        // to do: xu ly du lieu nhan tach ra signature voi data
+                        SaveDataToFile(data, "./result.pdf");
+                    }
+                    if (data[0]==2)
+                    {
+                        Console.WriteLine("Nhan file chua public key");
+                        SaveDataToFile(data, "./result.txt");
+                    }
                 }
             }
             catch
@@ -138,20 +154,18 @@ namespace Screen
             return formatter.Deserialize(stream);
         }
 
-        public void ReadDataFromPDFFile(byte[] data, string _fileName)
+        public void ReadDataFromFile(byte[] data, string _fileName)
         {
             System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Open);
             stream.Read(data, 0, data.Length);
             stream.Close();
         }
 
-        public void SaveDataToPDFFile(byte[] data, string _fileName)
+        public void SaveDataToFile(byte[] data, string _fileName)
         {
             System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Create);
-            stream.Write(data, 0, data.Length);
+            stream.Write(data, 1, data.Length-1);
             stream.Close();
         }
-
-      
     }
 }
