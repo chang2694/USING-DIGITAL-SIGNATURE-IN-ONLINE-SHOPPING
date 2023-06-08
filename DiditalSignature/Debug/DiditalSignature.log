@@ -1,0 +1,7 @@
+﻿  signature.c
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(84,22): warning C4013: 'calloc' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(115,6): warning C4013: 'free' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(84,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(85,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(13,10): warning C4101: 'b': unreferenced local variable
+  DiditalSignature.vcxproj -> D:\DigitalSignature\Dilithium\DiditalSignature\Debug\DiditalSignature.exe

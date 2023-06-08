@@ -149,5 +149,6 @@ namespace Screen
             seller = colon + "trang";
             sellerAddress = colon + "Bien Hoa";
         }
+
     }
 }

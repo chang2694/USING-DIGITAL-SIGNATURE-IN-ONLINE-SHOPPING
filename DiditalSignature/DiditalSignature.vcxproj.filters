@@ -12,7 +12,7 @@
     <ClCompile Include="rounding.c" />
     <ClCompile Include="sign.c" />
     <ClCompile Include="symmetric-shake.c" />
-    <ClCompile Include="getPDFdata.c" />
+    <ClCompile Include="getData.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
@@ -28,7 +28,7 @@
     <ClInclude Include="rounding.h" />
     <ClInclude Include="sign.h" />
     <ClInclude Include="symmetric.h" />
-    <ClInclude Include="getPDFdata.h" />
+    <ClInclude Include="getData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fips202.c" />
-    <ClCompile Include="getPDFdata.c" />
+    <ClCompile Include="getData.c" />
     <ClCompile Include="ntt.c" />
     <ClCompile Include="packing.c" />
     <ClCompile Include="poly.c" />
@@ -36,7 +36,7 @@
     <ClInclude Include="api.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="fips202.h" />
-    <ClInclude Include="getPDFdata.h" />
+    <ClInclude Include="getData.h" />
     <ClInclude Include="ntt.h" />
     <ClInclude Include="packing.h" />
     <ClInclude Include="params.h" />
