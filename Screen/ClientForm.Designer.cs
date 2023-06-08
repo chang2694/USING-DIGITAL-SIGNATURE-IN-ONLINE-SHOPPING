@@ -1,6 +1,6 @@
 ﻿namespace Screen
 {
-    partial class Client
+    partial class ClientForm
     {
         /// <summary>
         /// Required designer variable.

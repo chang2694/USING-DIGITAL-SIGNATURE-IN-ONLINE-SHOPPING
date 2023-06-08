@@ -19,13 +19,13 @@ namespace Screen
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Server frmServer = new Server();
+            ServerForm frmServer = new ServerForm();
             frmServer.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Client frmClient = new Client();
+            ClientForm frmClient = new ClientForm();
             frmClient.Show();
         }
     }

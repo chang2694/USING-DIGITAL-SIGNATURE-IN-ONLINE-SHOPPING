@@ -14,9 +14,15 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 namespace Screen
 {
-    public partial class Server : Form
+    public partial class ServerForm : Form
     {
-        public Server()
+        enum DataFormat
+        {
+            PDF = 1,
+            PublicKey = 2
+        }
+
+        public ServerForm() 
         {
             InitializeComponent();
             Connect();
@@ -80,14 +86,26 @@ namespace Screen
             {
                 while (true)
                 {
-                    byte[] data = new byte[1024 * 5001];
+                    byte[] data = new byte[1024 * 5000];
                     client.Receive(data);
-
-                    foreach (Socket item in clientList)
+                    if (data[0]==(byte)DataFormat.PublicKey)
                     {
-                        if (client != null && item != client)
+                        foreach (Socket item in clientList)
                         {
-                            item.Send(data);
+                            if (client != null && item != client)
+                            {
+                                item.Send(data);
+                            }
+                        }
+                    }
+                    if (data[0] == (byte)DataFormat.PDF)
+                    {
+                        foreach (Socket item in clientList)
+                        {
+                            if (client != null && item != client)
+                            {
+                                item.Send(data);
+                            }
                         }
                     }
                     string log = $"Receiving data from {client.RemoteEndPoint}";

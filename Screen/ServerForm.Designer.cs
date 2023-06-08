@@ -1,7 +1,7 @@
 ﻿
 namespace Screen
 {
-    partial class Server
+    partial class ServerForm
     {
         /// <summary>
         /// Required designer variable.

@@ -14,9 +14,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 namespace Screen
 {
-    public partial class Client : Form
+    public partial class ClientForm : Form
     {
-        public Client()
+        enum DataFormat 
+        {
+            PDF = 1,
+            PublicKey = 2
+        }
+        public ClientForm()
         {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
@@ -30,10 +35,8 @@ namespace Screen
             //to do: gui file pdf
             byte[] data = new byte[1024 * 5000];
             ReadDataFromFile(data, "./NT219.N22.ATCL-Session2_Group12.pdf");    // ten file
-            byte[] temp = new byte[1024 * 5001];
-            temp[0] = 1;
-            Array.Copy(data,0,temp,1,data.Length);
-            Send(temp);
+            data[0] = (byte)DataFormat.PDF; // Them 1 byte vao de phan biet day la du lieu gi
+            Send(data);
         }
 
         private void btnSendKey_Click(object sender, EventArgs e)
@@ -41,10 +44,8 @@ namespace Screen
             //to do: gui file chua public key
             byte[] data = new byte[1024 * 5000];
             ReadDataFromFile(data, "./test.txt");    // ten file
-            byte[] temp = new byte[1024 * 5001];
-            temp[0] = 2;
-            Array.Copy(data, 0, temp, 1, data.Length);
-            Send(temp);
+            data[0] = (byte)DataFormat.PublicKey; // Them 1 byte vao de phan biet day la du lieu gi
+            Send(data);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -113,15 +114,15 @@ namespace Screen
             {
                 while (true)
                 {
-                    byte[] data = new byte[1024 * 5001];
+                    byte[] data = new byte[1024 * 5000];
                     client.Receive(data);
 
-                    if (data[0]==1)
+                    if (data[0]==(byte)DataFormat.PDF)
                     {
                         // to do: xu ly du lieu nhan tach ra signature voi data
                         SaveDataToFile(data, "./result.pdf");
                     }
-                    if (data[0]==2)
+                    if (data[0]== (byte)DataFormat.PublicKey)
                     {
                         Console.WriteLine("Nhan file chua public key");
                         SaveDataToFile(data, "./result.txt");
@@ -130,7 +131,7 @@ namespace Screen
             }
             catch
             {
-                Close();
+                _Close();
             }
         }
 
@@ -157,7 +158,7 @@ namespace Screen
         public void ReadDataFromFile(byte[] data, string _fileName)
         {
             System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Open);
-            stream.Read(data, 0, data.Length);
+            stream.Read(data, 1, data.Length-1);
             stream.Close();
         }
 
