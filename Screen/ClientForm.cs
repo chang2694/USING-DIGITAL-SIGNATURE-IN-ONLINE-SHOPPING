@@ -19,7 +19,8 @@ namespace Screen
         enum DataFormat 
         {
             PDF = 1,
-            PublicKey = 2
+            PublicKey = 2,
+            DesIP=3
         }
         public ClientForm()
         {
@@ -32,18 +33,29 @@ namespace Screen
         string _ipAddress; // server's IP address
         private void btnSendFile_Click(object sender, EventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
+            //to do: lay dia chi cua nguoi gui toi va gui toi server
+            string desIP = textBox3.Text;
+            
+            byte[] temp = new byte[50];
+            temp[0] = (byte)DataFormat.DesIP;
+            Array.Copy(Serialize(desIP), 0, temp, 1, Serialize(desIP).Length);
+            Send(temp);
             //to do: gui file pdf
             byte[] data = new byte[1024 * 5000];
-            ReadDataFromFile(data, "./NT219.N22.ATCL-Session2_Group12.pdf");    // ten file
+            ReadDataFromFile(data, ofd.FileName,1);    // ten file
             data[0] = (byte)DataFormat.PDF; // Them 1 byte vao de phan biet day la du lieu gi
             Send(data);
         }
 
         private void btnSendKey_Click(object sender, EventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
             //to do: gui file chua public key
             byte[] data = new byte[1024 * 5000];
-            ReadDataFromFile(data, "./test.txt");    // ten file
+            ReadDataFromFile(data, ofd.FileName,1);    // ten file
             data[0] = (byte)DataFormat.PublicKey; // Them 1 byte vao de phan biet day la du lieu gi
             Send(data);
         }
@@ -79,6 +91,8 @@ namespace Screen
             try
             {
                 client.Connect(IP);
+                textBox2.Text = client.LocalEndPoint.ToString();    // Print out client local End Point IP
+                
             }
             catch
             {
@@ -120,12 +134,12 @@ namespace Screen
                     if (data[0]==(byte)DataFormat.PDF)
                     {
                         // to do: xu ly du lieu nhan tach ra signature voi data
-                        SaveDataToFile(data, "./result.pdf");
+                        SaveDataToFile(data, "./result.pdf",1);
                     }
                     if (data[0]== (byte)DataFormat.PublicKey)
                     {
                         Console.WriteLine("Nhan file chua public key");
-                        SaveDataToFile(data, "./result.txt");
+                        SaveDataToFile(data, "./result.txt",1);
                     }
                 }
             }
@@ -155,18 +169,33 @@ namespace Screen
             return formatter.Deserialize(stream);
         }
 
-        public void ReadDataFromFile(byte[] data, string _fileName)
+        public void ReadDataFromFile(byte[] data, string _fileName, int offset=0)
         {
             System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Open);
-            stream.Read(data, 1, data.Length-1);
+            stream.Read(data, offset, data.Length-offset);
             stream.Close();
         }
 
-        public void SaveDataToFile(byte[] data, string _fileName)
+        public void SaveDataToFile(byte[] data, string _fileName, int offset = 0)
         {
             System.IO.FileStream stream = new System.IO.FileStream(_fileName, System.IO.FileMode.Create);
-            stream.Write(data, 1, data.Length-1);
+            stream.Write(data, offset, data.Length-offset);
             stream.Close();
+        }
+
+        private void ClientForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -19,7 +19,8 @@ namespace Screen
         enum DataFormat
         {
             PDF = 1,
-            PublicKey = 2
+            PublicKey = 2,
+            DesIP = 3
         }
 
         public ServerForm() 
@@ -34,12 +35,12 @@ namespace Screen
         }
         IPEndPoint IP;
         Socket sever;
-        List<Socket> clientList;
+        List<Client> clientList;
         // Connect to sever
         void Connect()
         {
             //IP: sever ip address
-            clientList = new List<Socket>();
+            clientList = new List<Client>();
             IP = new IPEndPoint(IPAddress.Any, 2803); // 2803 is port number
             sever = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
 
@@ -53,12 +54,13 @@ namespace Screen
                     {
                         sever.Listen(100);
                         Socket client = sever.Accept();
-                        clientList.Add(client);
-
+                        Client user = new Client(client);
+                        clientList.Add(user);
+                        AddMessage($"Incomming connection from {client.RemoteEndPoint}");
 
                         Thread receive = new Thread(Receive);
                         receive.IsBackground = true;
-                        receive.Start(client);
+                        receive.Start(user);
                     }
                 }
                 catch
@@ -81,41 +83,56 @@ namespace Screen
         // Receive message
         void Receive(object obj)
         {
-            Socket client = obj as Socket;
+            Client user = obj as Client;
             try
             {
                 while (true)
                 {
                     byte[] data = new byte[1024 * 5000];
-                    client.Receive(data);
-                    if (data[0]==(byte)DataFormat.PublicKey)
+                    user._client.Receive(data);
+                    if (data[0]==(byte)DataFormat.PublicKey)    // Send to all client connected to server
                     {
-                        foreach (Socket item in clientList)
+                        foreach (Client item in clientList)
                         {
-                            if (client != null && item != client)
+                            if (user != null && item != user)
                             {
-                                item.Send(data);
+                                item._client.Send(data);
                             }
                         }
                     }
-                    if (data[0] == (byte)DataFormat.PDF)
+                    if (data[0] == (byte)DataFormat.PDF)    // Send to client has IP END POINT == desIP
                     {
-                        foreach (Socket item in clientList)
+                        foreach (Client item in clientList)
                         {
-                            if (client != null && item != client)
+                            if (user != null && item._client.RemoteEndPoint.ToString() == user.desIP)
                             {
-                                item.Send(data);
+                                item._client.Send(data);
+                                break;
                             }
                         }
                     }
-                    string log = $"Receiving data from {client.RemoteEndPoint}";
+                    if (data[0]==(byte)DataFormat.DesIP)
+                    {
+                        foreach (Client item in clientList)
+                        {
+                            if (user != null && item == user)
+                            {
+                                byte[] temp = new byte[50];
+                                Array.Copy(data, 1, temp, 0, 50);
+                                data = null;
+                                break;
+                            }    
+                                
+                        }
+                    }
+                    string log = $"Receiving data from {user._client.RemoteEndPoint}";
                     AddMessage(log);
                 }
             }
             catch
             {
-                clientList.Remove(client);
-                client.Close();
+                clientList.Remove(user);
+                user._client.Close();
             }
         }
 

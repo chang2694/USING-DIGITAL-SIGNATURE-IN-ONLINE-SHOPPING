@@ -25,6 +25,9 @@ namespace Screen
 
         private void button2_Click(object sender, EventArgs e)
         {
+            /*LoginForm frmLogin = new LoginForm();
+            frmLogin.Show();*/
+
             ClientForm frmClient = new ClientForm();
             frmClient.Show();
         }
