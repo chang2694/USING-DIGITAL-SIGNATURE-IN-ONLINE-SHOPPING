@@ -31,10 +31,8 @@ D:\DigitalSignature\Dilithium\Screen\bin\Debug\de\PdfSharp.resources.dll
 D:\DigitalSignature\Dilithium\Screen\bin\Debug\de\PdfSharp.Charting.resources.dll
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.csproj.AssemblyReference.cache
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.App.resources
-D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.Client.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.Invoice.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.Properties.Resources.resources
-D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.Server.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.csproj.GenerateResource.cache
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.csproj.CoreCompileInputs.cache
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.csproj.CopyComplete
@@ -62,3 +60,5 @@ C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj
 C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.csproj.CopyComplete
 C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.ClientForm.resources
 C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.ServerForm.resources
+D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ClientForm.resources
+D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ServerForm.resources

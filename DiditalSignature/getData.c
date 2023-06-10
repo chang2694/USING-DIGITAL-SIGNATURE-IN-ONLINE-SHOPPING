@@ -46,3 +46,23 @@ void readKeyFromFile(const char* filename, uint8_t* keyData, size_t keySize) {
     
     fclose(file);
 }
+
+void writeFile(const char* filename, uint8_t* Data, size_t Size) {
+    FILE* file;
+    errno_t err = fopen_s(&file, filename, "wb");
+
+    if (err != 0) {
+        printf("Failed to open file.\n");
+        return;
+    }
+
+    size_t elementsWritten = fwrite(Data, sizeof(uint8_t), Size, file);
+
+    if (elementsWritten != Size) {
+        printf("Failed to write file.\n");
+        fclose(file);
+        return;
+    }
+
+    fclose(file);
+}

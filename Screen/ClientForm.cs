@@ -12,6 +12,10 @@ using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+
 namespace Screen
 {
     public partial class ClientForm : Form
@@ -196,6 +200,49 @@ namespace Screen
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string pdfFilePath = "D:\\DigitalSignature\\Dilithium\\Screen\\1234_signed.pdf";
+            string imageFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\signed.png";
+            string outputFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+
+            byte[] pdfData = File.ReadAllBytes(pdfFilePath);
+
+            byte[] imageData = File.ReadAllBytes(imageFilePath);
+
+            EmbedDataInImage(imageData, pdfData);
+
+            EmbedImageInPDF(pdfData, imageData, outputFilePath);
+        }
+
+        public static void EmbedDataInImage(byte[] imageData, byte[] data)
+        {
+
+        }
+
+        public static void EmbedImageInPDF(byte[] pdfData, byte[] imageData, string outputFilePath)
+        {
+            // Tạo tệp PDF mới
+            PdfDocument pdfDocument = new PdfDocument();
+
+            // Đọc dữ liệu từ tệp PDF ban đầu
+            using (MemoryStream memoryStream = new MemoryStream(pdfData))
+            {
+                pdfDocument = PdfReader.Open(memoryStream);
+            }
+
+            // Tạo trang mới chứa hình ảnh
+            PdfPage page = pdfDocument.AddPage();
+
+            // Chèn hình ảnh vào trang PDF
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XImage image = XImage.FromStream(new MemoryStream(imageData));
+            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
+
+            // Lưu tệp PDF đầu ra
+            pdfDocument.Save(outputFilePath);
         }
     }
 }

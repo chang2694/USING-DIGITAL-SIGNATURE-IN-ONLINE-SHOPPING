@@ -291,17 +291,14 @@ int crypto_sign_verify(const uint8_t *sig,
  *
  * Description: Verify signed message.
  *
- * Arguments:   - uint8_t *m: pointer to output message (allocated
- *                            array with smlen bytes), can be equal to sm
- *              - size_t *mlen: pointer to output length of message
+ * Arguments:   - size_t *mlen: pointer to output length of message
  *              - const uint8_t *sm: pointer to signed message
  *              - size_t smlen: length of signed message
  *              - const uint8_t *pk: pointer to bit-packed public key
  *
  * Returns 0 if signed message could be verified correctly and -1 otherwise
  **************************************************/
-int crypto_sign_open(uint8_t *m,
-                     size_t *mlen,
+int crypto_sign_open(size_t *mlen,
                      const uint8_t *sm,
                      size_t smlen,
                      const uint8_t *pk)
@@ -317,16 +314,12 @@ int crypto_sign_open(uint8_t *m,
   else
   {
     /* All good, copy msg, return 0 */
-    for (i = 0; i < *mlen; ++i)
-      m[i] = sm[CRYPTO_BYTES + i];
     return 0;
   }
 
 badsig:
   /* Signature verification failed */
   *mlen = -1;
-  for (i = 0; i < smlen; ++i)
-    m[i] = 0;
 
   return -1;
 }

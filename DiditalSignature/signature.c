@@ -7,15 +7,7 @@
 
 int main(void)
 {
-	size_t i, j;
-	int ret;
-	size_t mlen, smlen;
-	uint8_t b;
-	uint8_t* m;
-
-	uint8_t pk[CRYPTO_PUBLICKEYBYTES];
-	uint8_t sk[CRYPTO_SECRETKEYBYTES];
-
+#pragma region CreateKey
 	//crypto_sign_keypair(pk, sk);
 
 	//// Public key
@@ -60,58 +52,63 @@ int main(void)
 
 	//fclose(file);
 	//printf("Đã ghi key vào tệp secretkey.key.\n");
-	
+#pragma endregion
 
-	readKeyFromFile("publickey.key", pk, sizeof(pk));
-	readKeyFromFile("secretkey.key", sk, sizeof(sk));
+	int option;
+	printf("1-sign\nother-verify\n");
+	scanf_s("%d", &option);
+	if (option == 1) {
+		size_t mlen, smlen;
+		uint8_t* m;
 
+		uint8_t sk[CRYPTO_SECRETKEYBYTES];
+		readKeyFromFile("secretkey.key", sk, sizeof(sk));
 
-	printf("\nPUBLICKEY:");
-	for (i = 0; i < CRYPTO_PUBLICKEYBYTES; i++)
-		printf("%x", pk[i]);
-	printf("\n\nSECRECTKEY:");
-	for (i = 0; i < CRYPTO_SECRETKEYBYTES; i++)
-		printf("%x", sk[i]);
+		const char* filePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+		size_t dataSize;
+		m = readPDF(filePath, &dataSize);
+		if (!m) {
+			printf("Failed to read file: %s\n", filePath);
+			return 0;
+		}
+		
+		uint8_t* sm = calloc(dataSize + CRYPTO_BYTES, sizeof(uint8_t));
 
-	const char* filePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\CV_LeThiHuyenTrang.pdf";
-	size_t dataSize;
-	m = readPDF(filePath, &dataSize);
-	if (!m) {
-		printf("Failed to read file: %s\n", filePath);
-		return 0;
+		crypto_sign(sm, &smlen, m, dataSize, sk);
+		const char* signedFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234_signed.pdf";
+		writeFile(signedFilePath, sm, smlen);
+		free(m);
 	}
+	else {
+		int ret;
+		size_t mlen, smlen;
+		uint8_t* sm;
 
-	uint8_t* sm = calloc(dataSize + CRYPTO_BYTES, sizeof(uint8_t));
-	uint8_t* m2 = calloc(dataSize + CRYPTO_BYTES, sizeof(uint8_t));
+		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
+		readKeyFromFile("publickey.key", pk, sizeof(pk));
 
-	crypto_sign(sm, &smlen, m, dataSize, sk);
+		const char* signedFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234_signed.pdf";
+		size_t dataSize;
+		sm = readPDF(signedFilePath, &dataSize);
+		if (!sm) {
+			printf("Failed to read file: %s\n", signedFilePath);
+			return 0;
+		}
+		mlen = dataSize - CRYPTO_BYTES;
+		smlen = dataSize;
 
-	ret = crypto_sign_open(m2, &mlen, sm, smlen, pk);
-	if (ret)
-	{
-		fprintf(stderr, "Verification failed\n");
-		return -1;
-	}
-	if (smlen != dataSize + CRYPTO_BYTES)
-	{
-		fprintf(stderr, "Signed message lengths wrong\n");
-		return -1;
-	}
-	if (mlen != dataSize)
-	{
-		fprintf(stderr, "Message lengths wrong\n");
-		return -1;
-	}
-	for (j = 0; j < dataSize; ++j)
-	{
-		if (m2[j] != m[j])
+		uint8_t* m = calloc(mlen, sizeof(uint8_t));
+		for (int i = 0; i < mlen; ++i)
+			m[mlen - 1 - i] = sm[CRYPTO_BYTES + mlen - 1 - i];
+
+		ret = crypto_sign_open(&mlen, sm, smlen, pk);
+		if (ret)
 		{
-			fprintf(stderr, "Messages don't match\n");
+			fprintf(stderr, "Verification failed\n");
 			return -1;
 		}
+
+		free(sm);
 	}
-
-
-	free(m);
 	return 0;
 }
