@@ -1,10 +1,9 @@
 ﻿  signature.c
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(75,23): warning C4013: 'calloc' undefined; assuming extern returning int
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(80,7): warning C4013: 'free' undefined; assuming extern returning int
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(102,21): warning C4018: '<': signed/unsigned mismatch
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(111,21): warning C4018: '<': signed/unsigned mismatch
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(75,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(100,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(101,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(61,10): warning C4101: 'mlen': unreferenced local variable
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(83,23): warning C4013: 'calloc' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(92,7): warning C4013: 'free' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(113,20): warning C4018: '<': signed/unsigned mismatch
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(125,8): warning C4013: 'system' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(83,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(112,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(67,10): warning C4101: 'mlen': unreferenced local variable
   DiditalSignature.vcxproj -> D:\DigitalSignature\Dilithium\DiditalSignature\Debug\DiditalSignature.exe

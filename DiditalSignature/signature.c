@@ -4,6 +4,7 @@
 #include "randombytes.h"
 #include "sign.h"
 #include "getData.h"
+#include <string.h>
 
 int main(void)
 {
@@ -54,9 +55,14 @@ int main(void)
 	//printf("Đã ghi key vào tệp secretkey.key.\n");
 #pragma endregion
 
-	int option;
-	printf("1-sign\nother-verify\n");
-	scanf_s("%d", &option);
+	char fileName[5];
+	fgets(fileName, 5, stdin);
+
+	char filePath[100];
+	strcpy_s(filePath, sizeof(filePath), "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\");
+	strcat_s(filePath, sizeof(filePath), fileName);
+
+	int option = 2;
 	if (option == 1) {
 		size_t mlen, smlen;
 		uint8_t* m;
@@ -64,51 +70,59 @@ int main(void)
 		uint8_t sk[CRYPTO_SECRETKEYBYTES];
 		readKeyFromFile("secretkey.key", sk, sizeof(sk));
 
-		const char* filePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+
+		strcat_s(filePath, sizeof(filePath), ".pdf");
+
 		size_t dataSize;
 		m = readPDF(filePath, &dataSize);
 		if (!m) {
 			printf("Failed to read file: %s\n", filePath);
 			return 0;
 		}
-		
+
 		uint8_t* sm = calloc(dataSize + CRYPTO_BYTES, sizeof(uint8_t));
 
 		crypto_sign(sm, &smlen, m, dataSize, sk);
-		const char* signedFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234_signed.pdf";
+
+		char signedFilePath[100];
+		strcpy_s(signedFilePath, sizeof(signedFilePath), "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\");
+		strcat_s(signedFilePath, sizeof(filePath), fileName);
+		strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
 		writeFile(signedFilePath, sm, smlen);
 		free(m);
-	}
+	 }
 	else {
-		int ret;
-		size_t mlen, smlen;
-		uint8_t* sm;
+	int ret;
+	size_t mlen, smlen;
+	uint8_t* sm;
 
-		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
-		readKeyFromFile("publickey.key", pk, sizeof(pk));
+	uint8_t pk[CRYPTO_PUBLICKEYBYTES];
+	readKeyFromFile("publickey.key", pk, sizeof(pk));
 
-		const char* signedFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234_signed.pdf";
-		size_t dataSize;
-		sm = readPDF(signedFilePath, &dataSize);
-		if (!sm) {
-			printf("Failed to read file: %s\n", signedFilePath);
-			return 0;
-		}
-		mlen = dataSize - CRYPTO_BYTES;
-		smlen = dataSize;
-
-		uint8_t* m = calloc(mlen, sizeof(uint8_t));
-		for (int i = 0; i < mlen; ++i)
-			m[mlen - 1 - i] = sm[CRYPTO_BYTES + mlen - 1 - i];
-
-		ret = crypto_sign_open(&mlen, sm, smlen, pk);
-		if (ret)
-		{
-			fprintf(stderr, "Verification failed\n");
-			return -1;
-		}
-
-		free(sm);
+	strcat_s(filePath, sizeof(filePath), "_signed.pdf");
+	size_t dataSize;
+	sm = readPDF(filePath, &dataSize);
+	if (!sm) {
+		printf("Failed to read file: %s\n", filePath);
+		return 0;
 	}
+	mlen = dataSize - CRYPTO_BYTES;
+	smlen = dataSize;
+
+	uint8_t* m = calloc(mlen, sizeof(uint8_t));
+	for (int i = 0; i < mlen; ++i)
+		m[mlen - 1 - i] = sm[CRYPTO_BYTES + mlen - 1 - i];
+
+	ret = crypto_sign_open(&mlen, sm, smlen, pk);
+	if (ret)
+	{
+		fprintf(stderr, "Verification failed\n");
+		return -1;
+	}
+
+	free(sm);
+	}
+	system("pause");
 	return 0;
+
 }
