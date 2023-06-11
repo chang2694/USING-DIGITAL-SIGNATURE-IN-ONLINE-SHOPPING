@@ -1,10 +1,10 @@
 ﻿  signature.c
 D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(89,24): warning C4013: 'calloc' undefined; assuming extern returning int
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(97,8): warning C4013: 'free' undefined; assuming extern returning int
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(120,22): warning C4018: '<': signed/unsigned mismatch
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(133,9): warning C4013: 'system' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(102,8): warning C4013: 'free' undefined; assuming extern returning int
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(125,22): warning C4018: '<': signed/unsigned mismatch
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(138,9): warning C4013: 'system' undefined; assuming extern returning int
 D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(89,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
-D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(119,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
+D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(124,1): warning C4047: 'initializing': 'uint8_t *' differs in levels of indirection from 'int'
 D:\DigitalSignature\Dilithium\DiditalSignature\signature.c(71,11): warning C4101: 'mlen': unreferenced local variable
   LINK : D:\DigitalSignature\Dilithium\DiditalSignature\Debug\DiditalSignature.exe not found or not built by the last incremental link; performing full link
   DiditalSignature.vcxproj -> D:\DigitalSignature\Dilithium\DiditalSignature\Debug\DiditalSignature.exe

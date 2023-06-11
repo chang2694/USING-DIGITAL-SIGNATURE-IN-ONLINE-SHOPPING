@@ -8,7 +8,7 @@
 
 int main(void)
 {
-	int option = 1;
+	int option = 2;
 	if (option == 1) {
 #pragma region CreateKey
 		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
@@ -94,6 +94,11 @@ int main(void)
 			strcpy_s(signedFilePath, sizeof(signedFilePath), fileName);
 			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
 			writeFile(signedFilePath, sm, smlen);
+			
+			char signatureFilePath[50];
+			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
+			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
+			writeFile(signatureFilePath, sm, CRYPTO_BYTES);
 			free(m);
 		}
 		else {
