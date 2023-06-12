@@ -8,7 +8,7 @@
 
 int main(void)
 {
-	int option = 2;
+	int option = 3;
 	if (option == 1) {
 #pragma region CreateKey
 		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
@@ -21,7 +21,8 @@ int main(void)
 
 		if (err != 0) {
 			printf("Không thể mở tệp.\n");
-			return 1;
+			system("pause");
+			return -1;
 		}
 
 		size_t keySize = sizeof(pk); // Kích thước của key trong byte
@@ -31,7 +32,8 @@ int main(void)
 		if (elementsWritten != keySize) {
 			printf("Lỗi khi ghi dữ liệu.\n");
 			fclose(file);
-			return 1;
+			system("pause");
+			return -1;
 		}
 
 		fclose(file);
@@ -41,7 +43,8 @@ int main(void)
 
 		if (err != 0) {
 			printf("Không thể mở tệp.\n");
-			return 1;
+			system("pause");
+			return -1;
 		}
 
 		keySize = sizeof(sk); // Kích thước của key trong byte
@@ -51,10 +54,12 @@ int main(void)
 		if (elementsWritten != keySize) {
 			printf("Lỗi khi ghi dữ liệu.\n");
 			fclose(file);
-			return 1;
+			system("pause");
+			return -1;
 		}
 
 		fclose(file);
+		printf("Create keypair succeeded\n");
 #pragma endregion
 	}
 	else {
@@ -73,6 +78,11 @@ int main(void)
 
 			uint8_t sk[CRYPTO_SECRETKEYBYTES];
 			readKeyFromFile("secretkey.key", sk, sizeof(sk));
+			if (!sk) {
+				printf("Failed to read key\n");
+				system("pause");
+				return -1;
+			}
 
 			char filePath[50];
 			strcpy_s(filePath, sizeof(filePath), fileName);
@@ -83,7 +93,8 @@ int main(void)
 			m = readPDF(filePath, &dataSize);
 			if (!m) {
 				printf("Failed to read file: %s\n", filePath);
-				return 0;
+				system("pause");
+				return -1;
 			}
 
 			uint8_t* sm = calloc(dataSize + CRYPTO_BYTES, sizeof(uint8_t));
@@ -94,49 +105,63 @@ int main(void)
 			strcpy_s(signedFilePath, sizeof(signedFilePath), fileName);
 			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
 			writeFile(signedFilePath, sm, smlen);
-			
+
 			char signatureFilePath[50];
 			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
 			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
 			writeFile(signatureFilePath, sm, CRYPTO_BYTES);
+
 			free(m);
+			printf("Sign succeeded!");
 		}
 		else {
 			int ret;
 			size_t mlen, smlen;
-			uint8_t* sm;
+			uint8_t* sig;
+			uint8_t* m;
 
 			uint8_t pk[CRYPTO_PUBLICKEYBYTES];
-			readKeyFromFile("publickey.key", pk, sizeof(pk));
+			readKeyFromFile("MyPublickey.key", pk, sizeof(pk));
 
-			char signedFilePath[50];
-			strcpy_s(signedFilePath, sizeof(signedFilePath), fileName);
-			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
-			size_t dataSize;
-			sm = readPDF(signedFilePath, &dataSize);
-			if (!sm) {
-				printf("Failed to read file: %s\n", signedFilePath);
-				return 0;
+			char signatureFilePath[50];
+			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
+			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
+
+
+			size_t signatureDataSize;
+			sig = readPDF(signatureFilePath, &signatureDataSize);
+			if (!sig) {
+				printf("Failed to read file: %s\n", signatureFilePath);
+				system("pause");
+				return -1;
 			}
-			mlen = dataSize - CRYPTO_BYTES;
-			smlen = dataSize;
-
-			uint8_t* m = calloc(mlen, sizeof(uint8_t));
-			for (int i = 0; i < mlen; ++i)
-				m[mlen - 1 - i] = sm[CRYPTO_BYTES + mlen - 1 - i];
-
-			ret = crypto_sign_open(&mlen, sm, smlen, pk);
-			if (ret)
-			{
-				fprintf(stderr, "Verification failed\n");
+			char messageFilePath[50];
+			strcpy_s(messageFilePath, sizeof(messageFilePath), fileName);
+			strcat_s(messageFilePath, sizeof(messageFilePath), ".pdf");
+			size_t messageDataSize;
+			m = readPDF(messageFilePath, &messageDataSize);
+			if (!sig) {
+				printf("Failed to read file: %s\n", messageFilePath);
+				system("pause");
 				return -1;
 			}
 
-			free(sm);
+			ret = crypto_sign_open(sig, signatureDataSize, m, messageDataSize, pk);
+			if (ret)
+			{
+				fprintf(stderr, "Verification failed\n");
+				system("pause");
+				return -1;
+			}
+			else {
+				printf("Verification succeeded\n");
+			}
+
+			free(sig);
+			free(m);
 		}
 	}
-		system("pause");
-		return 0;
-
-	
+	system("pause");
+	return 0;
 }
+	

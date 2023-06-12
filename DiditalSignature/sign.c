@@ -210,7 +210,7 @@ int crypto_sign(uint8_t *sm,
  *
  * Description: Verifies signature.
  *
- * Arguments:   - uint8_t *m: pointer to input signature
+ * Arguments:   - const uint8_t *sig: pointer to input signature
  *              - size_t siglen: length of signature
  *              - const uint8_t *m: pointer to message
  *              - size_t mlen: length of message
@@ -291,25 +291,27 @@ int crypto_sign_verify(const uint8_t *sig,
  *
  * Description: Verify signed message.
  *
- * Arguments:   - size_t *mlen: pointer to output length of message
- *              - const uint8_t *sm: pointer to signed message
+ * Arguments:   - const uint8_t *sig: pointer to input signature
  *              - size_t smlen: length of signed message
+ *              - const uint8_t *m: pointer to message
+ *              - size_t mlen: length of message
  *              - const uint8_t *pk: pointer to bit-packed public key
  *
  * Returns 0 if signed message could be verified correctly and -1 otherwise
  **************************************************/
-int crypto_sign_open(size_t *mlen,
-                     const uint8_t *sm,
+int crypto_sign_open(
+                     const uint8_t *sig,
                      size_t smlen,
+                     const uint8_t *m,
+                     size_t mlen,
                      const uint8_t *pk)
 {
   size_t i;
 
-  if (smlen < CRYPTO_BYTES)
+  if (smlen != CRYPTO_BYTES)
     goto badsig;
 
-  *mlen = smlen - CRYPTO_BYTES;
-  if (crypto_sign_verify(sm, CRYPTO_BYTES, sm + CRYPTO_BYTES, *mlen, pk))
+  if (crypto_sign_verify(sig, CRYPTO_BYTES, m, mlen, pk))
     goto badsig;
   else
   {
@@ -319,7 +321,6 @@ int crypto_sign_open(size_t *mlen,
 
 badsig:
   /* Signature verification failed */
-  *mlen = -1;
 
   return -1;
 }
