@@ -137,8 +137,13 @@ namespace Screen
 
                     if (data[0]==(byte)DataFormat.PDF)
                     {
+                        byte[] signature = new byte[3293];
+                        byte[] message = new byte[1024 * 5000];
+                        Array.Copy(data, signature, 3294);
+                        Array.Copy(data, message, data.Length - 3294);
                         // to do: xu ly du lieu nhan tach ra signature voi data
-                        SaveDataToFile(data, "./result.pdf",1);
+                        SaveDataToFile(signature, "./1234_signature.pdf",1);
+                        SaveDataToFile(message, "./1234.pdf", 3294);
                     }
                     if (data[0]== (byte)DataFormat.PublicKey)
                     {
