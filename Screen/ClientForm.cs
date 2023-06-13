@@ -15,6 +15,7 @@ using System.Threading;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using System.Diagnostics;
 
 namespace Screen
 {
@@ -41,14 +42,14 @@ namespace Screen
             ofd.ShowDialog();
             //to do: lay dia chi cua nguoi gui toi va gui toi server
             string desIP = textBox3.Text;
-            
+
             byte[] temp = new byte[50];
             temp[0] = (byte)DataFormat.DesIP;
             Array.Copy(Serialize(desIP), 0, temp, 1, Serialize(desIP).Length);
             Send(temp);
             //to do: gui file pdf
             byte[] data = new byte[1024 * 5000];
-            ReadDataFromFile(data, ofd.FileName,1);    // ten file
+            ReadDataFromFile(data, ofd.FileName, 1);    // ten file
             data[0] = (byte)DataFormat.PDF; // Them 1 byte vao de phan biet day la du lieu gi
             Send(data);
         }
@@ -137,18 +138,20 @@ namespace Screen
 
                     if (data[0]==(byte)DataFormat.PDF)
                     {
-                        byte[] signature = new byte[3293];
-                        byte[] message = new byte[1024 * 5000];
+                        byte[] signature = new byte[3294];
+                        byte[] message = new byte[32388];
                         Array.Copy(data, signature, 3294);
-                        Array.Copy(data, message, data.Length - 3294);
+                        Array.Copy(data,1+3293, message,0,32388);
                         // to do: xu ly du lieu nhan tach ra signature voi data
                         SaveDataToFile(signature, "./1234_signature.pdf",1);
-                        SaveDataToFile(message, "./1234.pdf", 3294);
+                        SaveDataToFile(message, "./1234.pdf",0);
+                        //SaveDataToFile(data, "result.pdf", 1);
                     }
                     if (data[0]== (byte)DataFormat.PublicKey)
                     {
-                        Console.WriteLine("Nhan file chua public key");
-                        SaveDataToFile(data, "./result.txt",1);
+                        byte[] temp = new byte[1952];
+                        Array.Copy(data, 1, temp, 0, 1952);
+                        SaveDataToFile(temp, "./publickey.key", 0);
                     }
                 }
             }
@@ -207,21 +210,6 @@ namespace Screen
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            string pdfFilePath = "D:\\DigitalSignature\\Dilithium\\Screen\\1234_signed.pdf";
-            string imageFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\signed.png";
-            string outputFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
-
-            byte[] pdfData = File.ReadAllBytes(pdfFilePath);
-
-            byte[] imageData = File.ReadAllBytes(imageFilePath);
-
-            EmbedDataInImage(imageData, pdfData);
-
-            EmbedImageInPDF(pdfData, imageData, outputFilePath);
-        }
-
         public static void EmbedDataInImage(byte[] imageData, byte[] data)
         {
 
@@ -248,6 +236,28 @@ namespace Screen
 
             // Lưu tệp PDF đầu ra
             pdfDocument.Save(outputFilePath);
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string filename = "Sign.exe";
+            Process.Start(filename);
+            /*string pdfFilePath = "D:\\DigitalSignature\\Dilithium\\Screen\\1234_signed.pdf";
+            string imageFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\signed.png";
+            string outputFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+
+            byte[] pdfData = File.ReadAllBytes(pdfFilePath);
+
+            byte[] imageData = File.ReadAllBytes(imageFilePath);
+
+            EmbedDataInImage(imageData, pdfData);
+
+            EmbedImageInPDF(pdfData, imageData, outputFilePath);*/
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string filename = "Verify.exe";
+            Process.Start(filename);
         }
     }
 }

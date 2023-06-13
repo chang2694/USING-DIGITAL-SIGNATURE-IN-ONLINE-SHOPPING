@@ -120,6 +120,7 @@ namespace Screen
                                 byte[] temp = new byte[50];
                                 Array.Copy(data, 1, temp, 0, 50);
                                 data = null;
+                                item.desIP = Deserialize(temp).ToString();
                                 break;
                             }    
                                 
