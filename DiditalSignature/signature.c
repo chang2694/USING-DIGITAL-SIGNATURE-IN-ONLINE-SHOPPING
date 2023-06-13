@@ -9,7 +9,7 @@
 int main(void)
 {
 	int option = 3;
-	if (option == 1) {
+	if (option == 1) { 
 #pragma region CreateKey
 		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
 		uint8_t sk[CRYPTO_SECRETKEYBYTES];
@@ -17,7 +17,7 @@ int main(void)
 
 		// Public key
 		FILE* file;
-		errno_t err = fopen_s(&file, "publickey.key", "wb"); // Mở tệp để ghi dữ liệu nhị phân (binary) với fopen_s
+		errno_t err = fopen_s(&file, "MyPublickey.key", "wb"); // Mở tệp để ghi dữ liệu nhị phân (binary) với fopen_s
 
 		if (err != 0) {
 			printf("Không thể mở tệp.\n");
@@ -37,9 +37,9 @@ int main(void)
 		}
 
 		fclose(file);
-
+		
 		// Secret key
-		err = fopen_s(&file, "secretkey.key", "wb"); // Mở tệp để ghi dữ liệu nhị phân (binary) với fopen_s
+		err = fopen_s(&file, "MySecretkey.key", "wb"); // Mở tệp để ghi dữ liệu nhị phân (binary) với fopen_s
 
 		if (err != 0) {
 			printf("Không thể mở tệp.\n");
@@ -77,7 +77,7 @@ int main(void)
 			uint8_t* m;
 
 			uint8_t sk[CRYPTO_SECRETKEYBYTES];
-			readKeyFromFile("secretkey.key", sk, sizeof(sk));
+			readKeyFromFile("MySecretkey.key", sk, sizeof(sk));
 			if (!sk) {
 				printf("Failed to read key\n");
 				system("pause");
@@ -106,10 +106,6 @@ int main(void)
 			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
 			writeFile(signedFilePath, sm, smlen);
 
-			char signatureFilePath[50];
-			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
-			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
-			writeFile(signatureFilePath, sm, CRYPTO_BYTES);
 
 			free(m);
 			printf("Sign succeeded!");
@@ -119,9 +115,9 @@ int main(void)
 			size_t mlen, smlen;
 			uint8_t* sig;
 			uint8_t* m;
-
+			
 			uint8_t pk[CRYPTO_PUBLICKEYBYTES];
-			readKeyFromFile("MyPublickey.key", pk, sizeof(pk));
+			readKeyFromFile("publickey.key", pk, sizeof(pk));
 
 			char signatureFilePath[50];
 			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
