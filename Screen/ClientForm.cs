@@ -12,14 +12,20 @@ using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using System.Diagnostics;
+using Aspose.Pdf;
+using Aspose.Pdf.Facades;
+using Aspose.Pdf.Forms;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using System.Diagnostics;
+using PdfSharp.Pdf.Content;
+using PdfSharp.Pdf.Content.Objects;
+
 
 namespace Screen
 {
-    public partial class ClientForm : Form
+    public partial class ClientForm : System.Windows.Forms.Form
     {
         enum DataFormat 
         {
@@ -143,9 +149,9 @@ namespace Screen
                         Array.Copy(data, signature, 3294);
                         Array.Copy(data,1+3293, message,0,32388);
                         // to do: xu ly du lieu nhan tach ra signature voi data
-                        SaveDataToFile(signature, "./1234_signature.pdf",1);
-                        SaveDataToFile(message, "./1234.pdf",0);
-                        //SaveDataToFile(data, "result.pdf", 1);
+                        //SaveDataToFile(signature, "./1234_signature.pdf",1);
+                        //SaveDataToFile(message, "./1234.pdf",0);
+                        SaveDataToFile(data, "1234.pdf", 1);
                     }
                     if (data[0]== (byte)DataFormat.PublicKey)
                     {
@@ -195,69 +201,155 @@ namespace Screen
             stream.Close();
         }
 
-        private void ClientForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public static void EmbedDataInImage(byte[] imageData, byte[] data)
-        {
-
-        }
-
-        public static void EmbedImageInPDF(byte[] pdfData, byte[] imageData, string outputFilePath)
-        {
-            // Tạo tệp PDF mới
-            PdfDocument pdfDocument = new PdfDocument();
-
-            // Đọc dữ liệu từ tệp PDF ban đầu
-            using (MemoryStream memoryStream = new MemoryStream(pdfData))
-            {
-                pdfDocument = PdfReader.Open(memoryStream);
-            }
-
-            // Tạo trang mới chứa hình ảnh
-            PdfPage page = pdfDocument.AddPage();
-
-            // Chèn hình ảnh vào trang PDF
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            XImage image = XImage.FromStream(new MemoryStream(imageData));
-            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
-
-            // Lưu tệp PDF đầu ra
-            pdfDocument.Save(outputFilePath);
-        }
         private void button2_Click(object sender, EventArgs e)
         {
             string filename = "Sign.exe";
-            Process.Start(filename);
-            /*string pdfFilePath = "D:\\DigitalSignature\\Dilithium\\Screen\\1234_signed.pdf";
-            string imageFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\signed.png";
-            string outputFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+            Process p = Process.Start(filename);
+            p.WaitForExit();
 
-            byte[] pdfData = File.ReadAllBytes(pdfFilePath);
-
-            byte[] imageData = File.ReadAllBytes(imageFilePath);
-
-            EmbedDataInImage(imageData, pdfData);
-
-            EmbedImageInPDF(pdfData, imageData, outputFilePath);*/
+            AddSignature();
         }
 
+        private void AddSignature()
+        {
+            string path = "./1234.pdf";
+
+            Document pdfDocument = new Document(path);
+            //PdfDocument document = PdfReader.Open(path, PdfDocumentOpenMode.Modify);
+            
+            byte[] signature = File.ReadAllBytes("./1234_signature.pdf");
+            FileSpecification fileSpecification = new FileSpecification("./1234_signature.pdf", "Signature");
+            pdfDocument.EmbeddedFiles.Add(fileSpecification);
+            //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            //PdfPage page = document.Pages[0];
+            //XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            //gfx.DrawString(Convert.ToBase64String(signature), new XFont("Microsoft Sans Serif", 0, XFontStyle.Bold), XBrushes.Blue, new XRect(0, 0, 0, 0));
+
+            pdfDocument.Save(path);
+            //System.IO.File.Delete("./1234_signature.pdf");
+            //MessageBox.Show("Deleted");
+        }
+
+        private void ReadSignature()
+        {
+            string path = "./1234.pdf";
+            Document pdfDocument = new Document(path);
+            foreach (FileSpecification fileSpecification in pdfDocument.EmbeddedFiles)
+            {
+                if(fileSpecification.Description == "Signature")
+                {
+                    string savePath = "./1234_signature.pdf";
+
+                    using (Stream fileStream = fileSpecification.StreamContents)
+                    {
+                        using (FileStream outputFileStream = File.Create(savePath))
+                        {
+                            fileStream.CopyTo(outputFileStream);
+                        }
+                    }
+
+                }
+            }
+            pdfDocument.EmbeddedFiles.Delete();
+            pdfDocument.Save(path);
+
+            //byte[] pdfBytes = File.ReadAllBytes(filePath);
+
+            //using (MemoryStream stream = new MemoryStream(pdfBytes))
+            //{
+            //    PdfDocument document = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+
+            //    int pageCount = document.PageCount;
+
+            //    int objectStartIndex = pdfBytes.Length - 3293;
+
+            //    byte[] objectBytes = new byte[3293];
+            //    Array.Copy(pdfBytes, objectStartIndex, objectBytes, 0, 3293);
+
+            //    document.Close();
+
+            //    SaveDataToFile(objectBytes, "./1234_signature.pdf");
+            //}
+        }
         private void button3_Click(object sender, EventArgs e)
         {
+            ReadSignature();
             string filename = "Verify.exe";
-            Process.Start(filename);
+            Process p = Process.Start(filename);
+            p.WaitForExit();
+            System.IO.File.Delete("./1234_signature.pdf");
+        }
+
+        public static void SignWithTimeStampServer()
+        {
+            using (Document document = new Document("./1234.pdf"))
+            {
+                using (PdfFileSignature signature = new PdfFileSignature(document))
+                {
+                    PKCS7 pkcs = new PKCS7(@"C:\Keys\test.pfx", "nhom11");
+                    TimestampSettings timestampSettings = new TimestampSettings("https://freetsa.org/tsr", string.Empty); // User/Password can be omitted
+                    pkcs.TimestampSettings = timestampSettings;
+                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(100, 100, 200, 100);
+                    // Create any of the three signature types
+                    signature.Sign(1, "Test", "Chang", "UIT", true, rect, pkcs);
+                    // Save output PDF file
+                    signature.Save("./1234.pdf");
+                }
+            }
+        }
+
+        public void ExtractSignature()
+        {
+            string input = "./1234.pdf";
+            using (Document pdfDocument = new Document(input))
+            {
+                foreach (Field field in pdfDocument.Form)
+                {
+                    SignatureField sf = field as SignatureField;
+                    if (sf != null)
+                    {
+                        Stream cerStream = sf.ExtractCertificate();
+                        if (cerStream != null)
+                        {
+                            using (cerStream)
+                            {
+                                byte[] bytes = new byte[cerStream.Length];
+                                using (FileStream fs = new FileStream( @"./1234.cer", FileMode.CreateNew))
+                                {
+                                    cerStream.Read(bytes, 0, bytes.Length);
+                                    fs.Write(bytes, 0, bytes.Length);
+                                }
+                            }
+                        }
+                    }
+                }
+                removeSignature();
+            }
+        }
+
+        public void removeSignature()
+        {
+            try
+            {
+                PdfFileSignature pdfSign = new PdfFileSignature();
+                // Open PDF document
+                pdfSign.BindPdf("./1234.pdf");
+                // Get list of signature names
+                IList<string> names = pdfSign.GetSignNames();
+                // Remove all the signatures from the PDF file
+                for (int index = 0; index < names.Count; index++)
+                {
+                    pdfSign.RemoveSignature((string)names[index]);
+                }
+                // Save updated PDF file
+                pdfSign.Save("./1234.pdf");
+                // ExEnd:RemoveSignature
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

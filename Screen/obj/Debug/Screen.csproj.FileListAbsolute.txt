@@ -62,3 +62,11 @@ C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj
 C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\obj\Debug\Screen.ServerForm.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ClientForm.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ServerForm.resources
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\Aspose.PDF.dll
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\Aspose.PDF.xml
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\zxing.dll
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\zxing.presentation.dll
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\zxing.xml
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\zxing.presentation.xml
+D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.Test.resources
+D:\DigitalSignature\Dilithium\Screen\bin\Debug\OpenSSL.NETStandard.dll

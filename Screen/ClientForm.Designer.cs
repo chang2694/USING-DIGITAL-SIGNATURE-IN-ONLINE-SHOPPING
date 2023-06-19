@@ -69,7 +69,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(190, 22);
             this.textBox1.TabIndex = 2;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
@@ -79,7 +78,6 @@
             this.label1.Size = new System.Drawing.Size(80, 17);
             this.label1.TabIndex = 3;
             this.label1.Text = "Server\'s IP:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
@@ -167,7 +165,6 @@
             this.Name = "ClientForm";
             this.Text = "People A";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Client_FormClosed);
-            this.Load += new System.EventHandler(this.ClientForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

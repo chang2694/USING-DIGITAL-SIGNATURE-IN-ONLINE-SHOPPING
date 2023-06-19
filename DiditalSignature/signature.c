@@ -101,11 +101,15 @@ int main(void)
 
 			crypto_sign(sm, &smlen, m, dataSize, sk);
 
-			char signedFilePath[50];
+		/*	char signedFilePath[50];
 			strcpy_s(signedFilePath, sizeof(signedFilePath), fileName);
 			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
-			writeFile(signedFilePath, sm, smlen);
+			writeFile(signedFilePath, sm, smlen);*/
 
+			char signatureFilePath[50];
+			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
+			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
+			writeFile(signatureFilePath, sm, CRYPTO_BYTES);
 
 			free(m);
 			printf("Sign succeeded!");
@@ -141,7 +145,7 @@ int main(void)
 				system("pause");
 				return -1;
 			}
-
+			
 			ret = crypto_sign_open(sig, signatureDataSize, m, messageDataSize, pk);
 			if (ret)
 			{
