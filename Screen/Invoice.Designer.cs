@@ -33,8 +33,6 @@ namespace Screen
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -58,8 +56,6 @@ namespace Screen
             this.email = new System.Windows.Forms.TextBox();
             this.payment = new System.Windows.Forms.TextBox();
             this.buyerAdress = new System.Windows.Forms.TextBox();
-            this.seller = new System.Windows.Forms.TextBox();
-            this.sellerAddress = new System.Windows.Forms.TextBox();
             this.subtotal = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.discount = new System.Windows.Forms.TextBox();
@@ -98,26 +94,6 @@ namespace Screen
             this.label3.Size = new System.Drawing.Size(64, 26);
             this.label3.TabIndex = 2;
             this.label3.Text = "Date:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
-            this.label4.Location = new System.Drawing.Point(657, 159);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 26);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Seller:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
-            this.label5.Location = new System.Drawing.Point(633, 200);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 26);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Address:";
             // 
             // label6
             // 
@@ -330,22 +306,6 @@ namespace Screen
             this.buyerAdress.Size = new System.Drawing.Size(413, 32);
             this.buyerAdress.TabIndex = 23;
             // 
-            // seller
-            // 
-            this.seller.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
-            this.seller.Location = new System.Drawing.Point(737, 159);
-            this.seller.Name = "seller";
-            this.seller.Size = new System.Drawing.Size(413, 32);
-            this.seller.TabIndex = 24;
-            // 
-            // sellerAddress
-            // 
-            this.sellerAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
-            this.sellerAddress.Location = new System.Drawing.Point(737, 197);
-            this.sellerAddress.Name = "sellerAddress";
-            this.sellerAddress.Size = new System.Drawing.Size(413, 32);
-            this.sellerAddress.TabIndex = 25;
-            // 
             // subtotal
             // 
             this.subtotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
@@ -401,8 +361,6 @@ namespace Screen
             this.Controls.Add(this.discount);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.subtotal);
-            this.Controls.Add(this.sellerAddress);
-            this.Controls.Add(this.seller);
             this.Controls.Add(this.buyerAdress);
             this.Controls.Add(this.payment);
             this.Controls.Add(this.email);
@@ -421,8 +379,6 @@ namespace Screen
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -440,8 +396,6 @@ namespace Screen
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label9;
@@ -465,8 +419,6 @@ namespace Screen
         private System.Windows.Forms.TextBox email;
         private System.Windows.Forms.TextBox payment;
         private System.Windows.Forms.TextBox buyerAdress;
-        private System.Windows.Forms.TextBox seller;
-        private System.Windows.Forms.TextBox sellerAddress;
         private System.Windows.Forms.TextBox subtotal;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox discount;

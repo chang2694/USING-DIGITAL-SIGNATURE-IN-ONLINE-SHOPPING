@@ -63,37 +63,22 @@ int main(void)
 #pragma endregion
 	}
 	else {
-		char fileName[50];
-		fgets(fileName, 50, stdin);
-
-		size_t newlinePos = strcspn(fileName, "\n");
-
-		if (newlinePos < strlen(fileName)) {
-			fileName[newlinePos] = '\0';
-		}
+		char* fileName = "sign.txt";
 
 		if (option == 2) {
 			size_t mlen, smlen;
 			uint8_t* m;
 
 			uint8_t sk[CRYPTO_SECRETKEYBYTES];
-			readKeyFromFile("MySecretkey.key", sk, sizeof(sk));
-			if (!sk) {
-				printf("Failed to read key\n");
-				system("pause");
+			int check = readKeyFromFile("MySecretkey.key", sk, sizeof(sk));
+			if (check != 0) {
 				return -1;
 			}
 
-			char filePath[50];
-			strcpy_s(filePath, sizeof(filePath), fileName);
-			strcat_s(filePath, sizeof(filePath), ".pdf");
-
 			size_t dataSize;
 
-			m = readPDF(filePath, &dataSize);
+			m = readPDF(fileName, &dataSize);
 			if (!m) {
-				printf("Failed to read file: %s\n", filePath);
-				system("pause");
 				return -1;
 			}
 
@@ -101,14 +86,11 @@ int main(void)
 
 			crypto_sign(sm, &smlen, m, dataSize, sk);
 
-			char signedFilePath[50];
-			strcpy_s(signedFilePath, sizeof(signedFilePath), fileName);
-			strcat_s(signedFilePath, sizeof(signedFilePath), "_signed.pdf");
-			writeFile(signedFilePath, sm, smlen);
+			char* signatureFilePath = "signature.txt";
+			writeFile(signatureFilePath, sm, CRYPTO_BYTES);
 
 
 			free(m);
-			printf("Sign succeeded!");
 		}
 		else {
 			int ret;
@@ -117,47 +99,34 @@ int main(void)
 			uint8_t* m;
 			
 			uint8_t pk[CRYPTO_PUBLICKEYBYTES];
-			readKeyFromFile("publickey.key", pk, sizeof(pk));
+			int check = readKeyFromFile("publickey.key", pk, sizeof(pk));
+			if (check != 0) {
+				return -1;
+			}
 
-			char signatureFilePath[50];
-			strcpy_s(signatureFilePath, sizeof(signatureFilePath), fileName);
-			strcat_s(signatureFilePath, sizeof(signatureFilePath), "_signature.pdf");
-
+			char* signatureFilePath = "signature.txt";
 
 			size_t signatureDataSize;
 			sig = readPDF(signatureFilePath, &signatureDataSize);
 			if (!sig) {
-				printf("Failed to read file: %s\n", signatureFilePath);
-				system("pause");
 				return -1;
 			}
-			char messageFilePath[50];
-			strcpy_s(messageFilePath, sizeof(messageFilePath), fileName);
-			strcat_s(messageFilePath, sizeof(messageFilePath), ".pdf");
 			size_t messageDataSize;
-			m = readPDF(messageFilePath, &messageDataSize);
+			m = readPDF(fileName, &messageDataSize);
 			if (!sig) {
-				printf("Failed to read file: %s\n", messageFilePath);
-				system("pause");
 				return -1;
 			}
 
 			ret = crypto_sign_open(sig, signatureDataSize, m, messageDataSize, pk);
 			if (ret)
 			{
-				fprintf(stderr, "Verification failed\n");
-				system("pause");
 				return -1;
-			}
-			else {
-				printf("Verification succeeded\n");
 			}
 
 			free(sig);
 			free(m);
 		}
 	}
-	system("pause");
 	return 0;
 }
 	

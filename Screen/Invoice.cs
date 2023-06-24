@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
@@ -17,17 +18,59 @@ namespace Screen
 {
     public partial class Invoice : Form
     {
-        Phases phases;
+        public InvoiceData phases;
         public Invoice()
         {
             InitializeComponent();
-            phases = new Phases();
+            phases = new InvoiceData();
+            ReadData();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ReadData();
-            ChangeBox();
+            CreateFile();
+            attachFile("1234.pdf", "phases.json", "1234.pdf");
+
+        }
+        public void CreateFile()
+        {
+            if ((phases.phase == 1 && phases.phase1.signature.Length == 0 )|| ( phases.phase == 2 && phases.phase1.signature.Length!=0))
+            {
+                phase1();
+            } else if ((phases.phase == 2 && phases.phase2.signature.Length == 0) || (phases.phase == 3 && phases.phase2.signature.Length != 0))
+            {
+                phase2();
+            } else if ((phases.phase == 3 && phases.phase3.signature.Length == 0) || (phases.phase == 4 && phases.phase3.signature.Length != 0))
+            {
+                phase3();
+            }
+        }
+        public void attachFile(string invoiceFilePath, string phasesFilePath, string outputFilePath)
+        {
+            PdfDocument invoiceDocument = PdfReader.Open(invoiceFilePath, PdfDocumentOpenMode.Import);
+
+            string phasesJson = File.ReadAllText(phasesFilePath);
+
+            PdfDocument outputDocument = new PdfDocument();
+
+            foreach (PdfPage page in invoiceDocument.Pages)
+            {
+                outputDocument.AddPage(page);
+            }
+
+            PdfPage phasesPage = outputDocument.Pages[0];
+            phasesPage.Annotations.Clear();
+            phasesPage.Annotations.Add(new PdfSharp.Pdf.Annotations.PdfTextAnnotation()
+            {
+                Contents = phasesJson,
+                Rectangle = new PdfSharp.Pdf.PdfRectangle(new XRect(50, 50, 500, 500)) 
+            });
+
+            outputDocument.Save(outputFilePath);
+        }
+
+        private void phase1()
+        {
             string no;
             string date;
             string buyer;
@@ -35,10 +78,8 @@ namespace Screen
             string email;
             string payment;
             string buyerAddress;
-            string seller;
-            string sellerAddress;
 
-            getData(out no, out date, out buyer, out phoneNumber, out email, out payment, out buyerAddress, out seller, out sellerAddress);
+            getData(out no, out date, out buyer, out phoneNumber, out email, out payment, out buyerAddress);
 
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -81,15 +122,6 @@ namespace Screen
             gfx.DrawString(buyerAddress, font, XBrushes.Black,
                 new XPoint(150, 190));
 
-            gfx.DrawString("Seller", font, XBrushes.Black,
-                new XPoint(page.Width / 2 + 10, 130));
-            gfx.DrawString(seller, font, XBrushes.Black,
-                new XPoint(page.Width / 2 + 60, 130));
-            gfx.DrawString("Address", font, XBrushes.Black,
-                new XPoint(page.Width / 2 + 10, 145));
-            gfx.DrawString(sellerAddress, font, XBrushes.Black,
-                new XPoint(page.Width / 2 + 60, 145));
-
             gfx.DrawString("NO.", fontHeader, XBrushes.Blue,
                 new XPoint(50, 250));
             gfx.DrawString("DESCRIPTION", fontHeader, XBrushes.Blue,
@@ -112,9 +144,6 @@ namespace Screen
                 currentPosition.Y = 50;
             }
 
-            XImage logo = XImage.FromFile("D:\\DigitalSignature\\Dilithium\\Screen\\dilithium.png");
-            gfx.DrawImage(logo, new XRect(70, currentPosition.Y, logo.PointWidth / logo.PointHeight * 60, 60));
-
             gfx.DrawString("Sub total", font, XBrushes.Black,
                 new XPoint(page.Width / 2 + 10, currentPosition.Y));
             currentPosition.Y += 15;
@@ -128,23 +157,116 @@ namespace Screen
                 new XPoint(page.Width / 2 + 10, currentPosition.Y));
 
 
-            string path = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\" + no + ".pdf";
+            string path =  no + ".pdf";
             document.Save(path);
-            Process.Start(path);
+            
         }
+        private void phase2()
+        {
+            string bank = phases.phase2.bank;
+            string accountNumber = phases.phase2.accountNumber;
+            int no = phases.phase1.no;
+            string seller = phases.phase2.seller;
+            string sellerAddress = phases.phase2.sellerAddress;
+            string date = phases.phase1.date;
 
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new XFont("Microsoft Sans Serif", 13);
+            XFont fontHeader = new XFont("Microsoft Sans Serif", 13, XFontStyle.Bold);
+
+            gfx.DrawString("INVOICE", new XFont("Microsoft Sans Serif", 40, XFontStyle.Bold), XBrushes.Blue,
+                new XPoint(200, 100));
+
+            gfx.DrawString("No.", font, XBrushes.Black,
+                new XPoint(70, 150));
+            gfx.DrawString(": " + no, font, XBrushes.Black,
+                new XPoint(170, 150));
+            gfx.DrawString("Date", font, XBrushes.Black,
+               new XPoint(70, 165));
+            gfx.DrawString(": " + date, font, XBrushes.Black,
+                new XPoint(170, 165));
+
+            gfx.DrawString("Seller", font, XBrushes.Black,
+                new XPoint(70, 180));
+            gfx.DrawString(": " + seller, font, XBrushes.Black,
+                new XPoint(170, 180));
+            gfx.DrawString("Bank", font, XBrushes.Black,
+                new XPoint(70, 195));
+            gfx.DrawString(": " + bank, font, XBrushes.Black,
+                new XPoint(170, 195));
+            gfx.DrawString("Account number", font, XBrushes.Black,
+                new XPoint(70, 210));
+            gfx.DrawString(": " + accountNumber, font, XBrushes.Black,
+                new XPoint(170, 210));
+            gfx.DrawString("Address", font, XBrushes.Black,
+                new XPoint(70, 225));
+            gfx.DrawString(": " + sellerAddress, font, XBrushes.Black,
+                new XPoint(170, 225));
+
+            string path = no + ".pdf";
+            document.Save(path);
+        }
+        private void phase3()
+        {
+            string bank = phases.phase3.bank;
+            string accountNumber = phases.phase3.accountNumber;
+            int no = phases.phase1.no;
+            string buyer = phases.phase1.buyer;
+            string buyerAddress = phases.phase1.buyerAddress;
+            string date = phases.phase1.date;
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new XFont("Microsoft Sans Serif", 13);
+            XFont fontHeader = new XFont("Microsoft Sans Serif", 13, XFontStyle.Bold);
+
+            gfx.DrawString("INVOICE", new XFont("Microsoft Sans Serif", 40, XFontStyle.Bold), XBrushes.Blue,
+                new XPoint(200, 100));
+
+            gfx.DrawString("No.", font, XBrushes.Black,
+                new XPoint(70, 150));
+            gfx.DrawString(": " + no, font, XBrushes.Black,
+                new XPoint(170, 150));
+            gfx.DrawString("Date", font, XBrushes.Black,
+               new XPoint(70, 165));
+            gfx.DrawString(": " + date, font, XBrushes.Black,
+                new XPoint(170, 165));
+
+            gfx.DrawString("Buyer", font, XBrushes.Black,
+                new XPoint(70, 180));
+            gfx.DrawString(": " + buyer, font, XBrushes.Black,
+                new XPoint(170, 180));
+            gfx.DrawString("Bank", font, XBrushes.Black,
+                new XPoint(70, 195));
+            gfx.DrawString(": " + bank, font, XBrushes.Black,
+                new XPoint(170, 195));
+            gfx.DrawString("Account number", font, XBrushes.Black,
+                new XPoint(70, 210));
+            gfx.DrawString(": " + accountNumber, font, XBrushes.Black,
+                new XPoint(170, 210));
+            gfx.DrawString("Address", font, XBrushes.Black,
+                new XPoint(70, 225));
+            gfx.DrawString(": " + buyerAddress, font, XBrushes.Black,
+                new XPoint(170, 225));
+
+            string path = no + ".pdf";
+            document.Save(path);
+        }
         private void getData(out string no,
         out string date,
         out string buyer,
         out string phoneNumber,
         out string email,
         out string payment,
-        out string buyerAddress,
-        out string seller,
-        out string sellerAddress)
+        out string buyerAddress)
         {
             string colon = ": ";
-            Phase1 p1 = phases.p1;
+            Phase1Data p1 = phases.phase1;
 
             no = p1.no.ToString();
             date = colon + p1.date;
@@ -153,13 +275,11 @@ namespace Screen
             email = colon + p1.email;
             payment = colon + p1.paymentMethod;
             buyerAddress = colon + p1.buyerAddress;
-            seller = colon + p1.seller;
-            sellerAddress = colon + p1.sellerAddress;
         }
 
         private void ChangeBox()
         {
-            Phase1 p1 = phases.p1;
+            Phase1Data p1 = phases.phase1;
 
             invoiceNo.Text = p1.no.ToString();
             date.Text = p1.date;
@@ -169,59 +289,70 @@ namespace Screen
             email.Text = p1.email;
             payment.Text = p1.paymentMethod;
             buyerAdress.Text = p1.buyerAddress;
-
-            seller.Text = p1.seller;
-            sellerAddress.Text = p1.sellerAddress;
-
-
         }
         public void ReadData()
         {
-            using (StreamReader sr = File.OpenText("D://DigitalSignature//Dilithium//Screen//data.json"))
+            using (StreamReader sr = File.OpenText("phases.json"))
             {
                 var obj = sr.ReadToEnd();
-                phases = JsonConvert.DeserializeObject<Phases>(obj);
+                phases = JsonConvert.DeserializeObject<InvoiceData>(obj);
             }
         }
+        public void WriteData()
+        {
+            string update = JsonConvert.SerializeObject(phases);
+            File.WriteAllText("phases.json", update);
+        }
     }
-    public class Phases {
-        public Phase1 p1 {set; get;}
-        public Phase2 p2 {set;get;}
-        public Phase3 p3 { set;get;} 
-    }
-public class Phase1
-{
-        public string signature { set; get; }
-        public string buyer { set; get; }
-        public string phoneNumber { set; get; }
-        public string email { set; get; }
-        public string paymentMethod { set; get; }
-        public string buyerAddress { set; get; }
-        public string seller { set; get; }
-        public string sellerAddress { set; get; }
-        public int no { set; get; }
-        public string date { set; get; }
-        public int shippingCost { set; get; }
-        public float discount { set; get; }
-        public List<Product> Products { set; get; }
-    }
-    public class Phase2
+    public class InvoiceData
     {
-        public string signature { set; get; }
-        public string bank { set; get; }
-        public string accountBank { set; get; }
+        public int phase;
+        public Phase1Data phase1 { get; set; }
+        public Phase2Data phase2 { get; set; }
+        public Phase3Data phase3 { get; set; }
+       
     }
-    public class Phase3
+
+    public class Phase1Data
     {
-        public string signature { set; get; }
-        public string bank { set; get; }
-        public string accountBank { set; get; }
+        public byte[] signature { get; set; }
+        public string buyer { get; set; }
+        public string phoneNumber { get; set; }
+        public string email { get; set; }
+        public string paymentMethod { get; set; }
+        public string buyerAddress { get; set; }
+        public int no { get; set; }
+        public string date { get; set; }
+        public int shippingCost { get; set; }
+        public float discount { get; set; }
+        public List<Product> Products { get; set; }
+
     }
+
+    public class Phase2Data
+    {
+        public byte[] signature { get; set; }
+
+        public string seller { get; set; }
+        public string bank { get; set; }
+        public string accountNumber { get; set; }
+        public string sellerAddress { get; set; }
+      
+    }
+
+    public class Phase3Data
+    {
+        public byte[] signature { get; set; }
+        public string bank { get; set; }
+        public string accountNumber { get; set; }
+      
+    }
+
     public class Product
     {
-        public string description { set; get; }
-        public int quantity { set; get; }
-        public int unitPrice { set; get; }
-        public int amount { set; get; }
+        public string description { get; set; }
+        public int quantity { get; set; }
+        public int unitPrice { get; set; }
+        public int amount { get; set; }
     }
 }

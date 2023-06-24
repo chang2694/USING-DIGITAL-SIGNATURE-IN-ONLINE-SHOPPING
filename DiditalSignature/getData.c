@@ -22,47 +22,43 @@ uint8_t* readPDF(const char* filePath, size_t* fileSize) {
         return data;
     }
     else {
-        printf("Failed to open file: %s\n", filePath);
         return NULL;
     }
 }
 
-void readKeyFromFile(const char* filename, uint8_t* keyData, size_t keySize) {
+int readKeyFromFile(const char* filename, uint8_t* keyData, size_t keySize) {
     FILE* file;
     errno_t err = fopen_s(&file, filename, "rb");
 
     if (err != 0) {
-        printf("Fail to open file.\n");
-        return;
+        return -1;
     }
     
     size_t elementsRead = fread(keyData, sizeof(uint8_t), keySize, file); 
 
     if (elementsRead != keySize) {
-        printf("Fail to read file.\n");
-        fclose(file);
-        return;
+        return -1;
     }
     
     fclose(file);
+    return 0;
 }
 
-void writeFile(const char* filename, uint8_t* Data, size_t Size) {
+int writeFile(const char* filename, uint8_t* Data, size_t Size) {
     FILE* file;
     errno_t err = fopen_s(&file, filename, "wb");
 
     if (err != 0) {
-        printf("Failed to open file.\n");
-        return;
+        return -1;
     }
 
     size_t elementsWritten = fwrite(Data, sizeof(uint8_t), Size, file);
 
     if (elementsWritten != Size) {
-        printf("Failed to write file.\n");
         fclose(file);
-        return;
+        return -1;
     }
 
     fclose(file);
+    return 0;
 }

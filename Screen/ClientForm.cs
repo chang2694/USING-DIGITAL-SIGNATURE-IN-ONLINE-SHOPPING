@@ -15,12 +15,15 @@ using System.Threading;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using PdfSharp.Pdf.Annotations;
+
 using System.Diagnostics;
 
 namespace Screen
 {
     public partial class ClientForm : Form
     {
+        Invoice invoice;
         enum DataFormat 
         {
             PDF = 1,
@@ -138,14 +141,9 @@ namespace Screen
 
                     if (data[0]==(byte)DataFormat.PDF)
                     {
-                        byte[] signature = new byte[3294];
-                        byte[] message = new byte[32388];
-                        Array.Copy(data, signature, 3294);
-                        Array.Copy(data,1+3293, message,0,32388);
-                        // to do: xu ly du lieu nhan tach ra signature voi data
-                        SaveDataToFile(signature, "./1234_signature.pdf",1);
-                        SaveDataToFile(message, "./1234.pdf",0);
-                        //SaveDataToFile(data, "result.pdf", 1);
+                        byte[] message = new byte[1024 * 5000];
+                        Array.Copy(data, 1, message, 0, data.Length - 1);
+                        SaveDataToFile(message, "1234.pdf");
                     }
                     if (data[0]== (byte)DataFormat.PublicKey)
                     {
@@ -194,70 +192,170 @@ namespace Screen
             stream.Write(data, offset, data.Length-offset);
             stream.Close();
         }
-
-        private void ClientForm_Load(object sender, EventArgs e)
+        public void getFile()
         {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public static void EmbedDataInImage(byte[] imageData, byte[] data)
-        {
-
-        }
-
-        public static void EmbedImageInPDF(byte[] pdfData, byte[] imageData, string outputFilePath)
-        {
-            // Tạo tệp PDF mới
-            PdfDocument pdfDocument = new PdfDocument();
-
-            // Đọc dữ liệu từ tệp PDF ban đầu
-            using (MemoryStream memoryStream = new MemoryStream(pdfData))
+            using (PdfDocument document = PdfReader.Open("1234.pdf", PdfDocumentOpenMode.Import))
             {
-                pdfDocument = PdfReader.Open(memoryStream);
+                PdfPage page = document.Pages[0];
+                string annotationContents = "";
+
+                PdfAnnotations annotations = page.Annotations;
+                MessageBox.Show(annotations.Count.ToString());
+                foreach (PdfAnnotation annotation in annotations)
+                {
+                    annotationContents = annotation.Contents;
+                }
+
+                byte[] content = Encoding.UTF8.GetBytes(annotationContents);
+
+                SaveDataToFile(content, "phases.json");
             }
 
-            // Tạo trang mới chứa hình ảnh
-            PdfPage page = pdfDocument.AddPage();
-
-            // Chèn hình ảnh vào trang PDF
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            XImage image = XImage.FromStream(new MemoryStream(imageData));
-            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
-
-            // Lưu tệp PDF đầu ra
-            pdfDocument.Save(outputFilePath);
+            
+            Process.Start("phases.json");
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
+            getFile();
+            invoice.ReadData();
+            
+            string message = "";
+            byte[] signature = new byte[3293];
+
+            if (invoice.phases.phase == 1)
+            {
+                goto Phase1;
+            }
+            else if (invoice.phases.phase == 2)
+            {
+                goto Phase2;
+
+            }
+            else if (invoice.phases.phase == 3)
+            {
+                goto Phase3;
+            }
+            else
+            {
+                MessageBox.Show("Error");
+                return;
+            }
+                
+        Phase3:
+            Phase3Data p3 = invoice.phases.phase3;
+            message += p3.bank + p3.accountNumber;
+        Phase2:
+            Phase2Data p2 = invoice.phases.phase2;
+            message += p2.seller + p2.bank + p2.accountNumber + p2.sellerAddress;
+        Phase1:
+            Phase1Data p1 = invoice.phases.phase1;
+            message += p1.buyer + p1.phoneNumber + p1.email + p1.paymentMethod + p1.buyerAddress + p1.no + p1.date + p1.shippingCost + p1.discount;
+            foreach (Product product in p1.Products)
+            {
+                message += product.description + product.quantity + product.unitPrice + product.amount;
+            }
+
+            byte[] byteMessage = Encoding.UTF8.GetBytes(message);
+            SaveDataToFile(byteMessage, "sign.txt");
             string filename = "Sign.exe";
-            Process.Start(filename);
-            /*string pdfFilePath = "D:\\DigitalSignature\\Dilithium\\Screen\\1234_signed.pdf";
-            string imageFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\signed.png";
-            string outputFilePath = "D:\\DigitalSignature\\Dilithium\\DiditalSignature\\FilePDF\\1234.pdf";
+            Process p = Process.Start(filename);
+            p.WaitForExit();
+            if(p.ExitCode != 0)
+            {
+                MessageBox.Show("Signing failed");
+                return;
+            } else
+            {
+                ReadDataFromFile(signature, "signature.txt", 0);
+                if(invoice.phases.phase == 1)
+                {
+                    invoice.phases.phase1.signature = signature;
+                } else if (invoice.phases.phase == 2)
+                {
+                    invoice.phases.phase2.signature = signature;
+                }
+                else if (invoice.phases.phase == 3)
+                {
+                    invoice.phases.phase3.signature = signature;
+                }
+                invoice.phases.phase++;
+                invoice.WriteData();
 
-            byte[] pdfData = File.ReadAllBytes(pdfFilePath);
-
-            byte[] imageData = File.ReadAllBytes(imageFilePath);
-
-            EmbedDataInImage(imageData, pdfData);
-
-            EmbedImageInPDF(pdfData, imageData, outputFilePath);*/
+                invoice.attachFile("1234.pdf", "phases.json", "1234.pdf");
+                File.Delete("sign.txt");
+                File.Delete("signature.txt");
+                File.Delete("phases.json");
+                MessageBox.Show("Succeeded");
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            getFile();
+           
+            invoice.ReadData();
+            
+            string message = "";
+            byte[] signature = new byte[3293];
+            if (invoice.phases.phase == 2)
+            {
+                signature = invoice.phases.phase1.signature;
+                goto Phase1;
+            }
+            else if (invoice.phases.phase == 3)
+            {
+                signature = invoice.phases.phase2.signature;
+                goto Phase2;
+            }
+            else if (invoice.phases.phase == 4)
+            {
+                signature = invoice.phases.phase3.signature;
+                goto Phase3;
+            }
+            else
+            {
+                MessageBox.Show("Error");
+                return;
+            }
+
+        Phase3:
+            Phase3Data p3 = invoice.phases.phase3;
+            message += p3.bank + p3.accountNumber;
+        Phase2:
+            Phase2Data p2 = invoice.phases.phase2;
+            message += p2.seller + p2.bank + p2.accountNumber + p2.sellerAddress;
+        Phase1:
+            Phase1Data p1 = invoice.phases.phase1;
+            message += p1.buyer + p1.phoneNumber + p1.email + p1.paymentMethod + p1.buyerAddress + p1.no + p1.date + p1.shippingCost + p1.discount;
+            foreach (Product product in p1.Products)
+            {
+                message += product.description + product.quantity + product.unitPrice + product.amount;
+            }
+
+            SaveDataToFile(signature, "signature.txt");
+            byte[] byteMessage = Encoding.UTF8.GetBytes(message);
+            SaveDataToFile(byteMessage, "sign.txt");
             string filename = "Verify.exe";
-            Process.Start(filename);
+            Process p = Process.Start(filename);
+            p.WaitForExit();
+            if(p.ExitCode != 0)
+            {
+                MessageBox.Show("Verification failed");
+                return;
+            }
+            else
+            {
+                File.Delete("sign.txt");
+                File.Delete("signature.txt");
+                MessageBox.Show("Succeeded");
+            }
+            File.Delete("phases.json");
+        }
+
+        private void ClientForm_Load(object sender, EventArgs e)
+        {
+            invoice = new Invoice();
         }
     }
 }
