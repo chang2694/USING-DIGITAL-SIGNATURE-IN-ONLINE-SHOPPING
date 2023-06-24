@@ -200,7 +200,7 @@ namespace Screen
                 string annotationContents = "";
 
                 PdfAnnotations annotations = page.Annotations;
-                MessageBox.Show(annotations.Count.ToString());
+
                 foreach (PdfAnnotation annotation in annotations)
                 {
                     annotationContents = annotation.Contents;
@@ -209,10 +209,8 @@ namespace Screen
                 byte[] content = Encoding.UTF8.GetBytes(annotationContents);
 
                 SaveDataToFile(content, "phases.json");
+                Process.Start("phases.json");
             }
-
-            
-            Process.Start("phases.json");
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -281,7 +279,8 @@ namespace Screen
                 }
                 invoice.phases.phase++;
                 invoice.WriteData();
-
+                invoice.CreateFile();
+                addSignatureStamp();
                 invoice.attachFile("1234.pdf", "phases.json", "1234.pdf");
                 File.Delete("sign.txt");
                 File.Delete("signature.txt");
@@ -289,7 +288,39 @@ namespace Screen
                 MessageBox.Show("Succeeded");
             }
         }
+        private void addSignatureStamp()
+        {
+            PdfDocument invoiceDocument = PdfReader.Open("1234.pdf", PdfDocumentOpenMode.Modify);
+            PdfPage page = invoiceDocument.Pages[0];
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            double y = page.Height - 20;
+            XFont font = new XFont("Microsoft Sans Serif", 10);
+            gfx.DrawString("Signer", font, XBrushes.Blue, new XPoint(50, y));
+            string signer = "";
+            if (invoice.phases.phase == 2)
+            {
+                signer = "San giao dich";
+            } else if (invoice.phases.phase == 3)
+            {
+                signer = invoice.phases.phase2.seller;
+            }
+            else if (invoice.phases.phase == 4)
+            {
+                signer = invoice.phases.phase1.buyer;
+            }
+            else
+            {
+                return;
+            }
+            gfx.DrawString(": " + signer, font, XBrushes.Blue, new XPoint(80, y));
+            y += 10;
+            gfx.DrawString("Date", font, XBrushes.Blue, new XPoint(50, y));
+            DateTime date = DateTime.Now;
+            string formattedTime = date.ToString("hh:mm tt d/M/yyyy");
+            gfx.DrawString(": " + formattedTime, font, XBrushes.Blue, new XPoint(80, y));
+            invoiceDocument.Save("1234.pdf");
 
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             getFile();

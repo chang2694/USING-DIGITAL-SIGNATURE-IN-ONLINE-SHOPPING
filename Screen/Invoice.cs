@@ -25,13 +25,6 @@ namespace Screen
             phases = new InvoiceData();
             ReadData();
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            CreateFile();
-            attachFile("1234.pdf", "phases.json", "1234.pdf");
-
-        }
         public void CreateFile()
         {
             if ((phases.phase == 1 && phases.phase1.signature.Length == 0 )|| ( phases.phase == 2 && phases.phase1.signature.Length!=0))
@@ -63,7 +56,7 @@ namespace Screen
             phasesPage.Annotations.Add(new PdfSharp.Pdf.Annotations.PdfTextAnnotation()
             {
                 Contents = phasesJson,
-                Rectangle = new PdfSharp.Pdf.PdfRectangle(new XRect(50, 50, 500, 500)) 
+                Rectangle = new PdfSharp.Pdf.PdfRectangle(new XRect(0, 0, 0, 0)) 
             });
 
             outputDocument.Save(outputFilePath);
@@ -302,6 +295,14 @@ namespace Screen
         {
             string update = JsonConvert.SerializeObject(phases);
             File.WriteAllText("phases.json", update);
+        }
+
+        private void Invoice_Load(object sender, EventArgs e)
+        {
+
+            CreateFile();
+            attachFile("1234.pdf", "phases.json", "1234.pdf");
+            Close();
         }
     }
     public class InvoiceData
