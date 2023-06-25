@@ -64,3 +64,5 @@ D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ClientForm.resources
 D:\DigitalSignature\Dilithium\Screen\obj\Debug\Screen.ServerForm.resources
 D:\DigitalSignature\Dilithium\Screen\bin\Debug\Newtonsoft.Json.dll
 D:\DigitalSignature\Dilithium\Screen\bin\Debug\Newtonsoft.Json.xml
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\bin\Debug\Newtonsoft.Json.dll
+C:\Users\hai\Desktop\DAMMH\USING-DIGITAL-SIGNATURE-IN-ONLINE-SHOPPING\Screen\bin\Debug\Newtonsoft.Json.xml

@@ -192,9 +192,9 @@ namespace Screen
             stream.Write(data, offset, data.Length-offset);
             stream.Close();
         }
-        public void getFile()
+        public void getFile(string filenName)
         {
-            using (PdfDocument document = PdfReader.Open("1234.pdf", PdfDocumentOpenMode.Import))
+            using (PdfDocument document = PdfReader.Open(filenName, PdfDocumentOpenMode.Import))
             {
                 PdfPage page = document.Pages[0];
                 string annotationContents = "";
@@ -215,7 +215,11 @@ namespace Screen
 
         private void button2_Click(object sender, EventArgs e)
         {
-            getFile();
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
+            string fileName =ofd.FileName;
+            getFile(fileName);
+
             invoice.ReadData();
             
             string message = "";
@@ -280,17 +284,17 @@ namespace Screen
                 invoice.phases.phase++;
                 invoice.WriteData();
                 invoice.CreateFile();
-                addSignatureStamp();
-                invoice.attachFile("1234.pdf", "phases.json", "1234.pdf");
+                addSignatureStamp(fileName);
+                invoice.attachFile(fileName, "phases.json", fileName);
                 File.Delete("sign.txt");
                 File.Delete("signature.txt");
                 File.Delete("phases.json");
                 MessageBox.Show("Succeeded");
             }
         }
-        private void addSignatureStamp()
+        private void addSignatureStamp(string fileName)
         {
-            PdfDocument invoiceDocument = PdfReader.Open("1234.pdf", PdfDocumentOpenMode.Modify);
+            PdfDocument invoiceDocument = PdfReader.Open(fileName, PdfDocumentOpenMode.Modify);
             PdfPage page = invoiceDocument.Pages[0];
             XGraphics gfx = XGraphics.FromPdfPage(page);
             double y = page.Height - 20;
@@ -318,13 +322,16 @@ namespace Screen
             DateTime date = DateTime.Now;
             string formattedTime = date.ToString("hh:mm tt d/M/yyyy");
             gfx.DrawString(": " + formattedTime, font, XBrushes.Blue, new XPoint(80, y));
-            invoiceDocument.Save("1234.pdf");
+            invoiceDocument.Save(fileName);
 
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            getFile();
-           
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
+            string fileName = ofd.FileName;
+            getFile(fileName);
+
             invoice.ReadData();
             
             string message = "";
