@@ -213,7 +213,7 @@ namespace Screen
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)  // sign button
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.ShowDialog();
@@ -325,7 +325,7 @@ namespace Screen
             invoiceDocument.Save(fileName);
 
         }
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e) // verify button
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.ShowDialog();
