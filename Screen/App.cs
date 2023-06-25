@@ -21,6 +21,7 @@ namespace Screen
         {
             ServerForm frmServer = new ServerForm();
             frmServer.Show();
+            this.Hide();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -30,6 +31,7 @@ namespace Screen
 
             ClientForm frmClient = new ClientForm();
             frmClient.Show();
+            this.Hide();
         }
     }
 }

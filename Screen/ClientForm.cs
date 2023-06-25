@@ -336,19 +336,23 @@ namespace Screen
             
             string message = "";
             byte[] signature = new byte[3293];
+            byte[] publicKey = new byte[1952];
             if (invoice.phases.phase == 2)
             {
                 signature = invoice.phases.phase1.signature;
+                publicKey = invoice.phases.phase1.publicKey;
                 goto Phase1;
             }
             else if (invoice.phases.phase == 3)
             {
                 signature = invoice.phases.phase2.signature;
+                publicKey = invoice.phases.phase1.publicKey;
                 goto Phase2;
             }
             else if (invoice.phases.phase == 4)
             {
                 signature = invoice.phases.phase3.signature;
+                publicKey = invoice.phases.phase1.publicKey;
                 goto Phase3;
             }
             else
@@ -372,6 +376,7 @@ namespace Screen
             }
 
             SaveDataToFile(signature, "signature.txt");
+            SaveDataToFile(publicKey, "publickey.key");
             byte[] byteMessage = Encoding.UTF8.GetBytes(message);
             SaveDataToFile(byteMessage, "sign.txt");
             string filename = "Verify.exe";
@@ -386,6 +391,7 @@ namespace Screen
             {
                 File.Delete("sign.txt");
                 File.Delete("signature.txt");
+                File.Delete("publickey.key");
                 MessageBox.Show("Succeeded");
             }
             File.Delete("phases.json");

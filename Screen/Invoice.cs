@@ -269,20 +269,6 @@ namespace Screen
             payment = colon + p1.paymentMethod;
             buyerAddress = colon + p1.buyerAddress;
         }
-
-        private void ChangeBox()
-        {
-            Phase1Data p1 = phases.phase1;
-
-            invoiceNo.Text = p1.no.ToString();
-            date.Text = p1.date;
-
-            Buyer.Text = p1.buyer;
-            phoneNumber.Text = p1.phoneNumber;
-            email.Text = p1.email;
-            payment.Text = p1.paymentMethod;
-            buyerAdress.Text = p1.buyerAddress;
-        }
         public void ReadData()
         {
             using (StreamReader sr = File.OpenText("phases.json"))
@@ -290,6 +276,31 @@ namespace Screen
                 var obj = sr.ReadToEnd();
                 phases = JsonConvert.DeserializeObject<InvoiceData>(obj);
             }
+            byte[] publicKey = new byte[1952];
+            System.IO.FileStream stream = new System.IO.FileStream("MyPublickey.key", System.IO.FileMode.Open);
+            stream.Read(publicKey, 0, 1952);
+
+            if ((phases.phase == 1 && phases.phase1.signature.Length == 0) || (phases.phase == 2 && phases.phase1.signature.Length != 0))
+            {
+                if (phases.phase1.publicKey != null)
+                    phases.phase1.publicKey = publicKey;
+            }
+            else if ((phases.phase == 2 && phases.phase2.signature.Length == 0) || (phases.phase == 3 && phases.phase2.signature.Length != 0))
+            {
+                if (phases.phase2.publicKey != null)
+                    phases.phase2.publicKey = publicKey;
+            }
+            else if ((phases.phase == 3 && phases.phase3.signature.Length == 0) || (phases.phase == 4 && phases.phase3.signature.Length != 0))
+            {
+                if (phases.phase3.publicKey != null)
+                    phases.phase3.publicKey = publicKey;
+            }
+            else
+            {
+                MessageBox.Show("Fail to read PublicKey");
+            }
+            stream.Close();
+            WriteData();
         }
         public void WriteData()
         {
@@ -322,6 +333,7 @@ namespace Screen
     public class Phase1Data
     {
         public byte[] signature { get; set; }
+        public byte[] publicKey { get; set; }
         public string buyer { get; set; }
         public string phoneNumber { get; set; }
         public string email { get; set; }
@@ -338,7 +350,7 @@ namespace Screen
     public class Phase2Data
     {
         public byte[] signature { get; set; }
-
+        public byte[] publicKey { get; set; }
         public string seller { get; set; }
         public string bank { get; set; }
         public string accountNumber { get; set; }
@@ -349,6 +361,7 @@ namespace Screen
     public class Phase3Data
     {
         public byte[] signature { get; set; }
+        public byte[] publicKey { get; set; }
         public string bank { get; set; }
         public string accountNumber { get; set; }
       
