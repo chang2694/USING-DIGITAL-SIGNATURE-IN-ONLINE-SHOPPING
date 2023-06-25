@@ -8,7 +8,7 @@
 
 int main(void)
 {
-	int option = 3;
+	int option = 1;
 	if (option == 1) { 
 #pragma region CreateKey
 		uint8_t pk[CRYPTO_PUBLICKEYBYTES];
