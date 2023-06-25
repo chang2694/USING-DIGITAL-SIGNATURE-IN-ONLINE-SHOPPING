@@ -28,7 +28,8 @@ namespace Screen
         {
             PDF = 1,
             PublicKey = 2,
-            DesIP=3
+            DesIP=3,
+            Cert=4
         }
         public ClientForm()
         {
@@ -138,7 +139,12 @@ namespace Screen
                 {
                     byte[] data = new byte[1024 * 5000];
                     client.Receive(data);
-
+                    if (data[0]==(byte)DataFormat.Cert)
+                    {
+                        byte[] temp = new byte[4096];
+                        Array.Copy(data, 1, temp, 0, 4096);
+                        SaveDataToFile(temp, "ServerCert.crt", 0);
+                    }
                     if (data[0]==(byte)DataFormat.PDF)
                     {
                         byte[] message = new byte[1024 * 5000];

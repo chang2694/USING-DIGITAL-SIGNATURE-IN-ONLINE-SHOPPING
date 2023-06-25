@@ -52,7 +52,7 @@ namespace Screen
             // btnSendFile
             // 
             this.btnSendFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSendFile.Location = new System.Drawing.Point(49, 202);
+            this.btnSendFile.Location = new System.Drawing.Point(46, 190);
             this.btnSendFile.Name = "btnSendFile";
             this.btnSendFile.Size = new System.Drawing.Size(117, 91);
             this.btnSendFile.TabIndex = 2;
@@ -63,7 +63,7 @@ namespace Screen
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(225, 202);
+            this.button2.Location = new System.Drawing.Point(222, 190);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(117, 91);
             this.button2.TabIndex = 11;
@@ -107,7 +107,7 @@ namespace Screen
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(386, 202);
+            this.button3.Location = new System.Drawing.Point(383, 190);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(117, 91);
             this.button3.TabIndex = 18;

@@ -28,7 +28,8 @@ namespace Screen
         {
             PDF = 1,
             PublicKey = 2,
-            DesIP = 3
+            DesIP = 3,
+            Cert=4
         }
 
         public ServerForm() 
@@ -55,6 +56,9 @@ namespace Screen
             sever.Bind(IP);
             AddMessage($"Server's IP: {IP}");
             textBox2.Text = IP.Address.ToString().Trim();
+            byte[] data = new byte[4096];
+            data[0] = (byte)DataFormat.Cert;
+            ReadDataFromFile(data,"ServerCert.crt",1);
             Thread Listen = new Thread(() => {
 
                 try
@@ -65,6 +69,8 @@ namespace Screen
                         Socket client = sever.Accept();
                         Client user = new Client(client);
                         clientList.Add(user);
+                        //Sending server's cert
+                        user._client.Send(data);
                         AddMessage($"Incomming connection from {client.RemoteEndPoint}");
 
 

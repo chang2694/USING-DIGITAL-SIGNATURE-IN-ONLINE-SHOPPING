@@ -1,0 +1,9 @@
+openssl ecparam -name prime256v1 -genkey -noout -out ec-private-key.pem
+
+openssl ec -in ec-private-key.pem -pubout -out ec-public-key.pem
+
+openssl req -x509 -key ec-private-key.pem -new -out ec-temp.crt -days 365
+
+//Xem thông tin file *.crt (có thể double-click để mở file *.crt)
+openssl x509 -in ec-temp.crt -inform pem -text -noout
+
