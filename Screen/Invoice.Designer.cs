@@ -349,6 +349,7 @@ namespace Screen
             this.button1.TabIndex = 30;
             this.button1.Text = "CREATE FILE";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Invoice
             // 

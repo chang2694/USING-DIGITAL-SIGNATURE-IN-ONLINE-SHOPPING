@@ -23,7 +23,7 @@ namespace Screen
         {
             InitializeComponent();
             phases = new InvoiceData();
-            ReadData();
+            //ReadData();
         }
         public void CreateFile()
         {
@@ -303,6 +303,11 @@ namespace Screen
             CreateFile();
             attachFile("1234.pdf", "phases.json", "1234.pdf");
             Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
     public class InvoiceData
